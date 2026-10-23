@@ -7,7 +7,7 @@ The site has two pages:
 - **System.** A 3D model of the eval pipeline (collect, run, score, report) above a file explorer. Click a stage to see its steps and the code that does each step. Some steps have a "look closer" view that animates a design decision.
 - **Codebase.** The eval code as a graph, with a timeline of how it grew batch by batch.
 
-The site is private. We publish it only when the whole team agrees.
+The site is live at **https://azhang03.github.io/eval-viz/**. The whole team agreed to publish it.
 
 ## Run it
 
@@ -38,8 +38,10 @@ Summaries and pseudocode are written by hand in a separate file, keyed by functi
 ## Layout
 
 ```
+.github/workflows/         the deploy to GitHub Pages
 index.html, src/          the app (React, TypeScript, GSAP, three.js)
-src/styles/theme.css      colors and fonts
+src/styles/theme.css      colors and font names
+src/styles/fonts.css      self-hosted fonts (Fontsource, SIL Open Font License 1.1)
 src/data/                 types and loaders for the generated data
 scripts/gen_manifest.py   one manifest for each batch commit -> data/manifest/<commit>.json
 scripts/gen_fixtures.py   real task data for the views -> data/fixtures/
@@ -62,3 +64,9 @@ The tests make sure that the site stays true to the code:
 - The TypeScript copies of the split rule and the hunk search give the same answers as the real Python functions. `scripts/check.py` loads those functions from codemem with git and records their answers in `data/checks/expected.json`.
 - Every function that `content/` names exists in the newest manifest, in the file that the content says.
 - A coverage report lists the public functions that have no written explanation yet. These show their docstring on the site. The report does not fail the tests.
+
+## Deploy
+
+Each push to `main` deploys the site to GitHub Pages (`.github/workflows/deploy.yml`). The workflow runs `npm ci`, `npm test`, and `npm run build`, then publishes `dist/`. The build reads only the committed files in `data/`, so CI does not need the codemem repo. `npm run check` needs `../codemem`, so run it locally before you push. CI runs the tests on the answers that are committed in `data/checks/`.
+
+The site uses relative asset paths and hash routes (`#/codebase`), so it works from the `/eval-viz/` sub-path with no server setup.
