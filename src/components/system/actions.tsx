@@ -4,10 +4,10 @@ import { STAGES, type Part, type Stage } from "../../../content/stages";
 import { clearCards, pushCard, type Card } from "../../state/rail";
 import { system } from "../../state/system";
 import { Html } from "../Html";
-import { FileChip, FnChip, goFn, walkToFile } from "./cards";
+import { FileChip, FnChip, fileName, goFn, walkToFile } from "./cards";
+import { pause } from "../../lib/util";
 import { openCloser } from "../../closers/host";
 
-const fileName = (path: string) => path.split("/").pop() ?? path;
 const short = (path: string) => path.replace("eval/src/cmeval/", "");
 
 function stageCard(stage: Stage): Card {
@@ -107,7 +107,6 @@ export function hoverFiles(files: string[] | null): void {
 
 // ---------- Play the import path ----------
 
-const pause = (s: number) => new Promise((r) => setTimeout(r, s * 1000));
 let playRun = 0;
 
 /** Walk the whole import call path: each COLLECT step, each of its files, each function card. */

@@ -1,7 +1,7 @@
 // Page 1, layout C (viz decision 6): floor top left, explorer bottom left, rail on the right.
 // A click in the floor or the explorer grows that half a little. Clicks only, never hover,
 // so the line between them never moves under the mouse.
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { Rail } from "../components/rail/Rail";
 import { Breadcrumbs } from "../components/system/Breadcrumbs";
@@ -10,6 +10,7 @@ import { LookButton } from "../components/system/LookButton";
 import { CloserOverlay } from "../components/system/CloserOverlay";
 import { Explorer } from "../components/system/Explorer";
 import { closeStage } from "../components/system/actions";
+import { system } from "../state/system";
 import "./SystemPage.css";
 
 const SPLIT = { base: 58, floor: 62, explorer: 46 }; // floor share in percent
@@ -17,6 +18,8 @@ const SPLIT = { base: 58, floor: 62, explorer: 46 }; // floor share in percent
 export function SystemPage() {
   const grid = useRef<HTMLDivElement>(null);
   const split = useRef({ t: SPLIT.base });
+  // "Play the import path" belongs to this page: stop it when the page goes away
+  useEffect(() => () => system.set((s) => ({ ...s, playing: false })), []);
 
   const focus = (t: number) => {
     if (Math.abs(split.current.t - t) < 0.5) return;

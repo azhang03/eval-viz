@@ -19,6 +19,8 @@ export type Card = {
   body: () => ReactNode;
   /** Puts the floor and the explorer back to this card's point. */
   restore?: () => void;
+  /** For file and function cards: the repo path of the file. The explorer marks it while the card is in front. */
+  path?: string;
 };
 
 export type RailState = { cards: Card[] };
@@ -44,6 +46,11 @@ export function popTo(index: number, restore = true): void {
   if (index >= cards.length - 1 && index >= 0) return;
   rail.set({ cards: cards.slice(0, index + 1) });
   if (restore) cards[index]?.restore?.();
+}
+
+/** Remove one card, wherever it is in the stack, without restoring anything. */
+export function removeCard(key: string): void {
+  rail.set(({ cards }) => ({ cards: cards.filter((c) => c.key !== key) }));
 }
 
 export function clearCards(): void {

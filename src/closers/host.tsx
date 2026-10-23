@@ -3,7 +3,7 @@
 // card hides it, and closing the card ends it.
 import { gsap } from "gsap";
 import type { CloserKey } from "../../content/stages";
-import { pushCard, popTo, rail } from "../state/rail";
+import { pushCard, popTo, rail, removeCard } from "../state/rail";
 import { createStore } from "../state/store";
 import { esc } from "../lib/esc";
 import type { CloserView } from "./types";
@@ -32,10 +32,18 @@ export function viewCode(): CloserView["code"] {
 
 /** The CloserOverlay component gives the host element. */
 export function registerHost(el: HTMLElement | null): void {
-  host = el;
   unsubscribe?.();
-  unsubscribe = el ? rail.subscribe(sync) : null;
-  if (!el) end();
+  if (!el) {
+    // the page goes away: end the view and drop its card while the host still exists
+    const key = closer.get().key;
+    end(true);
+    if (key) removeCard(`closer:${key}`);
+    host = null;
+    unsubscribe = null;
+    return;
+  }
+  host = el;
+  unsubscribe = rail.subscribe(sync);
 }
 
 function bar(title: string, n: number): string {
@@ -51,7 +59,10 @@ export function openCloser(key: CloserKey): void {
     show();
     return;
   }
-  end();
+  // only one look-closer card at a time: drop the old one, wherever it is
+  const old = closer.get().key;
+  end(true);
+  if (old) removeCard(`closer:${old}`);
   const v = VIEWS[key]();
   view = v;
   host.innerHTML = v.html;
@@ -119,6 +130,7 @@ export function closeCloser(): void {
 
 function show() {
   if (!host || closer.get().visible) return;
+  gsap.killTweensOf(host); // a fade-out that is still running must not hide the view again
   host.style.display = "block";
   closer.set((s) => ({ ...s, visible: true }));
   gsap.fromTo(host, { opacity: 0 }, { opacity: 1, duration: 0.3 });
@@ -126,20 +138,26 @@ function show() {
   if (box) gsap.fromTo(box, { scale: 0.94, y: 14 }, { scale: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" });
 }
 
-function hide(then?: () => void) {
+function hide(then?: () => void, now = false) {
   stopPlay();
   const h = host;
-  if (!h || !closer.get().visible) { then?.(); return; }
-  closer.set((s) => ({ ...s, visible: false }));
+  const wasVisible = closer.get().visible;
+  if (wasVisible) closer.set((s) => ({ ...s, visible: false }));
+  if (!h || !wasVisible || now) {
+    if (h) { gsap.killTweensOf(h); h.style.display = "none"; }
+    then?.();
+    return;
+  }
   gsap.to(h, { opacity: 0, duration: 0.25, onComplete: () => { h.style.display = "none"; then?.(); } });
 }
 
-function end() {
+/** End the view. `now`: no fade (a new view replaces it, or the page goes away). */
+function end(now = false) {
   const v = view;
   view = null;
   const finish = () => { v?.dispose(); if (host && !view) host.innerHTML = ""; };
-  if (closer.get().key) closer.set({ key: null, i: 0, playing: false, visible: closer.get().visible });
-  hide(finish);
+  hide(finish, now);
+  closer.set({ key: null, i: 0, playing: false, visible: false });
 }
 
 // the view follows the stack: shown while its card is in front, hidden below, ended when gone

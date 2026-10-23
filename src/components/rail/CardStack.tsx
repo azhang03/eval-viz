@@ -14,7 +14,11 @@ const topFor = (i: number, n: number) => 2 + Math.max(0, i - Math.max(0, n - 1 -
 
 export function CardStack({ onLast }: { onLast: () => void }) {
   const cards = useStore(rail, (s) => s.cards);
-  const [leaving, setLeaving] = useState<Card[]>([]);
+  // cards that left the stack slide out first; each has its own id, so a card that comes back
+  // while its old copy still slides out is a new element, never the old one
+  const [leaving, setLeaving] = useState<{ card: Card; id: number }[]>([]);
+  const leaveId = useRef(0);
+  const leaveEls = useRef(new Map<number, HTMLElement>());
   const prev = useRef<Card[]>([]);
   const els = useRef(new Map<string, HTMLElement>());
   const placed = useRef(new Set<string>());
@@ -24,7 +28,12 @@ export function CardStack({ onLast }: { onLast: () => void }) {
   useLayoutEffect(() => {
     const gone = prev.current.filter((c) => !cards.some((x) => x.key === c.key));
     prev.current = cards;
-    if (gone.length) setLeaving((l) => [...l, ...gone.reverse()]);
+    setLeaving((l) => {
+      // a card that is back in the stack stops leaving
+      const kept = l.filter((x) => !cards.some((c) => c.key === x.card.key));
+      const added = gone.reverse().map((card) => ({ card, id: ++leaveId.current }));
+      return kept.length === l.length && !added.length ? l : [...kept, ...added];
+    });
   }, [cards]);
 
   useLayoutEffect(() => {
@@ -39,14 +48,14 @@ export function CardStack({ onLast }: { onLast: () => void }) {
       }
       gsap.to(el, { top: topFor(i, n), duration: 0.42, ease: "power3.out", overwrite: "auto" });
     });
-    leaving.forEach((c, k) => {
-      const el = els.current.get(c.key);
+    leaving.forEach(({ card, id }, k) => {
+      const el = leaveEls.current.get(id);
       if (!el || el.dataset.leaving) return;
       el.dataset.leaving = "1";
-      placed.current.delete(c.key);
+      placed.current.delete(card.key);
       gsap.to(el, {
         top: h + 20, duration: 0.35, delay: k * 0.05, ease: "power3.in", overwrite: "auto",
-        onComplete: () => setLeaving((l) => l.filter((x) => x.key !== c.key)),
+        onComplete: () => setLeaving((l) => l.filter((x) => x.id !== id)),
       });
     });
   }, [cards, leaving]);
@@ -55,18 +64,23 @@ export function CardStack({ onLast }: { onLast: () => void }) {
     if (el) els.current.set(key, el);
     else els.current.delete(key);
   };
+  const leaveRef = (id: number) => (el: HTMLElement | null) => {
+    if (el) leaveEls.current.set(id, el);
+    else leaveEls.current.delete(id);
+  };
   const lift = (i: number, by: number) => {
     const c = cards[i];
     const el = c && els.current.get(c.key);
     if (el && i < cards.length - 1) gsap.to(el, { top: topFor(i, cards.length) - by, duration: 0.2, ease: "power2.out" });
   };
 
-  const render = (c: Card, i: number, isLeaving: boolean) => {
+  const render = (c: Card, i: number, leaveAs?: number) => {
+    const isLeaving = leaveAs !== undefined;
     const top = !isLeaving && i === cards.length - 1;
     return (
       <aside
-        key={c.key}
-        ref={ref(c.key)}
+        key={isLeaving ? `leaving:${leaveAs}` : c.key}
+        ref={isLeaving ? leaveRef(leaveAs) : ref(c.key)}
         className={`card${top ? " top" : ""}`}
         style={{ zIndex: isLeaving ? 60 : 10 + i }}
         onMouseEnter={() => !isLeaving && lift(i, 6)}
@@ -94,8 +108,8 @@ export function CardStack({ onLast }: { onLast: () => void }) {
 
   return (
     <div className="stack" ref={box}>
-      {cards.map((c, i) => render(c, i, false))}
-      {leaving.map((c) => render(c, -1, true))}
+      {cards.map((c, i) => render(c, i))}
+      {leaving.map(({ card, id }) => render(card, -1, id))}
     </div>
   );
 }

@@ -4,6 +4,7 @@
 import { flushSync } from "react-dom";
 import { gsap } from "gsap";
 import { createStore } from "./store";
+import { pause } from "../lib/util";
 
 export type ExplorerState = { path: string[] };
 
@@ -17,7 +18,6 @@ export function registerGrid(el: HTMLElement | null): void {
 
 const items = () => (grid ? [...grid.querySelectorAll<HTMLElement>(".item")] : []);
 const itemNamed = (name: string) => items().find((el) => el.dataset.name === name) ?? null;
-const pause = (s: number) => new Promise((r) => setTimeout(r, s * 1000));
 
 async function stepUp(): Promise<void> {
   const from = explorer.get().path.at(-1);

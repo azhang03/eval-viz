@@ -12,6 +12,17 @@ const DEV = "#2f8f8a", TEST = "#5b6fb5";
 
 type Anim = { hash?: boolean; num?: boolean; ball?: boolean };
 
+const SAMPLE = 5000;
+let sampleShare: number | null = null; // share of dev over SAMPLE IDs; the same every time, so computed once
+function devShare(): number {
+  if (sampleShare === null) {
+    let dev = 0;
+    for (let k = 0; k < SAMPLE; k++) if (splitOf(`fresh__repo-${k}`).split === "dev") dev++;
+    sampleShare = dev / SAMPLE;
+  }
+  return sampleShare;
+}
+
 export function splitView(): CloserView {
   const html = `<div class="box-in sp">
     <div class="panes">
@@ -79,10 +90,7 @@ export function splitView(): CloserView {
     q(el, ".addt").onclick = () => addTasks(20);
     addTasks(40, false);
     // a large sample shows the long-run share
-    let dev = 0;
-    const M = 5000;
-    for (let k = 0; k < M; k++) if (splitOf(`fresh__repo-${k}`).split === "dev") dev++;
-    q(el, ".share.big").textContent = `over ${M.toLocaleString("en-US")} IDs: ${((dev / M) * 100).toFixed(1)}% dev`;
+    q(el, ".share.big").textContent = `over ${SAMPLE.toLocaleString("en-US")} IDs: ${(devShare() * 100).toFixed(1)}% dev`;
   }
 
   // anim: which parts move this time. true means all of them.

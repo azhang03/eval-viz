@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { EXPLANATIONS } from "../../../content/explanations";
 import { manifest } from "../../data/current";
-import type { DefId, Definition, Method } from "../../data/types";
+import type { DefId, Definition, Manifest, Method } from "../../data/types";
 import { nodeAt, segsOf } from "../../lib/explorer";
 import { walkTo } from "../../state/explorer";
 import { pushCard, type Card } from "../../state/rail";
@@ -123,7 +123,9 @@ export function fileCard(path: string, marks?: FileMarks): Card {
   const info = m.files[path];
   const node = nodeAt(m.tree, segsOf(path));
   return {
-    key: `file:${path}`,
+    // the marks are part of the key: the same file opened from another step is a new card
+    key: `file:${path}${marks ? `|${marks.badge}:${marks.ids.join(",")}` : ""}`,
+    path,
     type: "file",
     short: fileName(path),
     kind: node?.boilerplate ? "boilerplate" : info ? `file . ${info.module}` : "file",
@@ -138,14 +140,22 @@ export function fileCard(path: string, marks?: FileMarks): Card {
 
 type Found = { kind: "function" | "class" | "method"; name: string; sig?: string; doc: string; line: number; methods?: Method[] };
 
+// definition ID -> definition, built once for each manifest
+const defIndex = new WeakMap<Manifest, Map<DefId, Found>>();
 function findDef(id: DefId): Found | null {
-  for (const info of Object.values(manifest().files)) {
-    for (const it of info.items) {
-      if (it.id === id) return it.kind === "class" ? { kind: "class", name: it.name, doc: it.doc, line: it.line, methods: it.methods } : { kind: "function", name: it.name, sig: it.sig, doc: it.doc, line: it.line };
-      if (it.kind === "class") for (const me of it.methods) if (me.id === id) return { kind: "method", name: me.name, sig: me.sig, doc: me.doc, line: me.line };
+  const m = manifest();
+  let index = defIndex.get(m);
+  if (!index) {
+    index = new Map();
+    for (const info of Object.values(m.files)) {
+      for (const it of info.items) {
+        index.set(it.id, it.kind === "class" ? { kind: "class", name: it.name, doc: it.doc, line: it.line, methods: it.methods } : { kind: "function", name: it.name, sig: it.sig, doc: it.doc, line: it.line });
+        if (it.kind === "class") for (const me of it.methods) index.set(me.id, { kind: "method", name: me.name, sig: me.sig, doc: me.doc, line: me.line });
+      }
     }
+    defIndex.set(m, index);
   }
-  return null;
+  return index.get(id) ?? null;
 }
 
 function FnBody({ id }: { id: DefId }) {
@@ -195,6 +205,7 @@ export function fnCard(id: DefId): Card {
   const where = manifest().where[id];
   return {
     key: `fn:${id}`,
+    path: where,
     type: "fn",
     short: def?.name ?? lastPart(id),
     kind: `${def?.kind ?? "function"} . ${owner}`,

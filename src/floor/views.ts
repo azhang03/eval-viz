@@ -2,6 +2,7 @@
 // a task crate that travels through 5 stations. Other stages open into plain blocks until they
 // get their own line (V1-02 B5).
 import * as THREE from "three";
+import { esc } from "../lib/esc";
 import { gsap } from "gsap";
 import type { Part, Stage } from "../../content/stages";
 import { COLOR, disposeTree, ghostBox, mat, rbox } from "./kit";
@@ -26,7 +27,6 @@ export type View = {
 
 export type ViewCtx = { scene: THREE.Scene; overlay: Overlay; x: number; tl: gsap.core.Timeline };
 
-const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 function stepTag(ctx: ViewCtx, p: Part, k: number, obj: THREE.Object3D, o: { baseY: number; dy: number; dz?: number; cls?: string; extra?: string }): Tag {
   const tag = ctx.overlay.addTag(`${k + 1}. ${esc(p.n)}${p.ghost ? "<small>planned</small>" : ""}${o.extra ?? ""}`, new THREE.Vector3(), `part${p.ghost ? " ghost" : ""}${o.cls ? ` ${o.cls}` : ""}`);

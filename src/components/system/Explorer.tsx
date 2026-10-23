@@ -40,11 +40,7 @@ function Icon({ node }: { node: TreeNode }) {
 
 /** The repo path of the front card's file: a file card, or the file of a function card. */
 function frontFile(): string | null {
-  const top = rail.get().cards.at(-1);
-  if (!top) return null;
-  if (top.type === "file") return top.key.slice("file:".length);
-  if (top.type === "fn") return manifest().where[top.key.slice("fn:".length)] ?? null;
-  return null;
+  return rail.get().cards.at(-1)?.path ?? null;
 }
 
 export function Explorer() {

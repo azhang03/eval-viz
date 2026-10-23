@@ -3,6 +3,7 @@
 // scene reports clicks and hovers through the handlers. A queue runs one open or close at a
 // time, so fast clicks never overlap two animations.
 import * as THREE from "three";
+import { esc } from "../lib/esc";
 import { gsap } from "gsap";
 import type { Part, Stage } from "../../content/stages";
 import { COLOR, disposeTree, ghostBox, mat, rbox, rounded } from "./kit";
@@ -20,7 +21,6 @@ export type FloorState = { opened: Stage["id"] | null; step: number | null };
 
 const X = [-7.5, -2.5, 2.5, 7.5]; // machine x, in stage order
 const HOME: Cam = { zoom: 1, tx: 0.6, ty: 1.6, tz: 0.6 };
-const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const statusText = (s: Stage) => (s.status === "partial" ? "being built" : s.status);
 const filesOf = (p: Part) => (p.use ?? []).map(([f]) => f);
 const shortFile = (f: string) => f.split("/").pop() ?? f;
