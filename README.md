@@ -35,9 +35,15 @@ Summaries and pseudocode are written by hand in a separate file, keyed by functi
 ## Layout
 
 ```
-index.html, src/        the app (React, TypeScript, GSAP, three.js)
-src/styles/theme.css    colors and fonts
-scripts/                manifest and fixture scripts (to come)
-data/                   generated manifests and fixtures (to come)
-content/                hand-written explanations and stage steps (to come)
+index.html, src/          the app (React, TypeScript, GSAP, three.js)
+src/styles/theme.css      colors and fonts
+src/data/                 types and loaders for the generated data
+scripts/gen_manifest.py   one manifest for each batch commit -> data/manifest/<commit>.json
+scripts/gen_fixtures.py   real task data for the views -> data/fixtures/
+data/timeline.json        phases, features, and batches, with their commits (kept by hand)
+content/                  hand-written explanations and stage steps (to come)
 ```
+
+## Update the data
+
+`npm run gen` writes a manifest for each commit in `data/timeline.json` and writes the fixtures. It expects the codemem repo at `../codemem`. The fixture script also needs the scikit-learn clone that `cmeval import` makes in `~/.cmeval/repos`. The output is the same each time, so a run with no codemem change gives no git diff. Commit the files in `data/` after a run.
