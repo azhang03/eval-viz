@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
-    "gen": "python3 -I scripts/gen_manifest.py --repo ../codemem --all && python3 -I scripts/gen_fixtures.py --repo ../codemem"
+    "gen": "python3 -I scripts/gen_manifest.py --repo ../codemem --all && python3 -I scripts/gen_fixtures.py --repo ../codemem",
+    "test": "vitest run",
+    "check": "python3 -I scripts/check.py --repo ../codemem && vitest run"
   },
   "dependencies": {
     "gsap": "3.15.0",
@@ -22,6 +24,7 @@
     "@types/three": "0.186.0",
     "@vitejs/plugin-react": "6.1.2",
     "typescript": "7.0.2",
-    "vite": "8.3.5"
+    "vite": "8.3.5",
+    "vitest": "4.1.12"
   }
 }
