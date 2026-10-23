@@ -14,10 +14,3 @@
 .crumbs .c:disabled { cursor: default; }
 .crumbs .c.cur { background: var(--ink); color: var(--paper); }
 .crumbs .sep { color: var(--ink-dim); }
-
-.finder { background: var(--paper); border-radius: 18px; box-shadow: 0 0 0 2px var(--ink), 0 5px 0 var(--ink); display: grid; grid-template-rows: 46px minmax(0, 1fr); overflow: hidden; margin-bottom: 5px; }
-.finder .tbar { display: flex; align-items: center; gap: 12px; padding: 0 14px; border-bottom: 1.5px solid var(--line); background: #f8f0e3; }
-.finder .dots { display: flex; gap: 7px; }
-.finder .dots i { width: 12px; height: 12px; border-radius: 50%; display: block; box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.18); }
-.finder .path { font: 500 13px var(--font-mono); }
-.finder-body { display: grid; place-items: center; color: var(--ink-2); }

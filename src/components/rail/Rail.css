@@ -41,3 +41,19 @@
 .chip.look { background: var(--mustard); }
 .chip .f { color: var(--ink-dim); }
 .src-note { font: 500 10.5px var(--font-mono); color: var(--ink-dim); margin-top: 14px; }
+
+/* file and function cards */
+.fn-meta { font: 500 10.5px var(--font-mono); color: var(--ink-dim); margin-bottom: 10px; }
+.also { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 0 0 12px; font-size: 12px; color: var(--ink-2); }
+.def { font: 500 12px/1.45 var(--font-mono); padding: 6px 46px 6px 9px; border-radius: 9px; cursor: pointer; margin: 2px 0; position: relative; word-break: break-word; }
+.def:hover { background: rgba(43, 38, 34, 0.05); }
+.def .kw { color: var(--terra); font-weight: 600; }
+.def .ln { position: absolute; right: 8px; top: 6px; color: var(--ink-dim); font-size: 10px; }
+.def .ds { display: block; font: 13px/1.4 var(--font-body); color: var(--ink-2); margin-top: 2px; }
+.def.meth { margin-left: 18px; }
+.def.hl { background: var(--mustard-soft); box-shadow: 0 0 0 1.5px var(--ink); margin-top: 10px; }
+.def.hl::before { content: attr(data-step); position: absolute; left: -2px; top: -8px; font: 700 9px var(--font-mono); background: var(--ink); color: var(--paper); padding: 1px 6px; border-radius: 999px; }
+.def.priv { opacity: 0.55; }
+.privtoggle { font: 600 11px var(--font-mono); color: var(--ink-dim); cursor: pointer; margin: 8px 0 2px 9px; }
+.bp-note { font-size: 13px; background: rgba(125, 147, 168, 0.14); border-radius: 10px; padding: 10px 12px; color: var(--ink-2); }
+.chip.dim { box-shadow: 0 0 0 1px var(--line); color: var(--ink-dim); }

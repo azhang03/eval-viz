@@ -6,7 +6,7 @@ import { gsap } from "gsap";
 import { Rail } from "../components/rail/Rail";
 import { Breadcrumbs } from "../components/system/Breadcrumbs";
 import { Floor } from "../components/system/Floor";
-import { ExplorerStandIn } from "../components/system/ExplorerStandIn";
+import { Explorer } from "../components/system/Explorer";
 import { closeStage } from "../components/system/actions";
 import "./SystemPage.css";
 
@@ -34,7 +34,7 @@ export function SystemPage() {
         <Floor />
       </section>
       <div className="explorer-cell" onPointerDown={() => focus(SPLIT.explorer)}>
-        <ExplorerStandIn />
+        <Explorer />
       </div>
       <Rail onLast={closeStage} />
     </div>

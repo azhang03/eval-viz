@@ -7,6 +7,8 @@ export type SystemState = {
   step: number | null;
   /** Files to light in the explorer while the mouse is over a machine or a step. */
   hover: string[] | null;
+  /** "Play the import path" is running. */
+  playing: boolean;
 };
 
-export const system = createStore<SystemState>({ opened: null, step: null, hover: null });
+export const system = createStore<SystemState>({ opened: null, step: null, hover: null, playing: false });

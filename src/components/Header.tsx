@@ -1,5 +1,8 @@
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { system } from "../state/system";
+import { useStore } from "../state/store";
+import { playImportPath } from "./system/actions";
 import "./Header.css";
 
 export type Tab = "system" | "codebase";
@@ -15,6 +18,7 @@ export function Header({ tab, onSelect }: Props) {
   const tabsRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
   const placed = useRef(false);
+  const playing = useStore(system, (s) => s.playing);
 
   // The light pill slides under the active tab. The first placement does not animate.
   useLayoutEffect(() => {
@@ -48,8 +52,8 @@ export function Header({ tab, onSelect }: Props) {
         ))}
       </div>
       <div className="spacer" />
-      <button className="btn primary" disabled title="Comes with page 1">
-        Play the import path
+      <button className="btn primary" disabled={tab !== "system"} onClick={() => void playImportPath()}>
+        {playing ? "Stop" : "Play the import path"}
       </button>
     </header>
   );

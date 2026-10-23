@@ -4,10 +4,10 @@ import { STAGES, type Part, type Stage } from "../../../content/stages";
 import { clearCards, pushCard, type Card } from "../../state/rail";
 import { system } from "../../state/system";
 import { Html } from "../Html";
+import { FileChip, FnChip, goFn, walkToFile } from "./cards";
 
 const fileName = (path: string) => path.split("/").pop() ?? path;
 const short = (path: string) => path.replace("eval/src/cmeval/", "");
-const fnName = (id: string) => id.split(".").pop() ?? id;
 
 function stageCard(stage: Stage): Card {
   return {
@@ -53,11 +53,8 @@ function stepCard(stage: Stage, part: Part, k: number): Card {
           <div key={file}>
             <h4>{fileName(file)}</h4>
             <div className="chips">
-              {ids.map((id) => (
-                <span key={id} className="chip" title="Function cards come in V1-02 B3">
-                  {fnName(id)} <span className="f">{fileName(file)}</span>
-                </span>
-              ))}
+              {ids.map((id) => <FnChip key={id} id={id} />)}
+              <FileChip path={file} label={`open ${fileName(file)}`} marks={{ ids, badge: `step ${k + 1}`, also: (part.use ?? []).filter(([f]) => f !== file) }} />
             </div>
           </div>
         ))}
@@ -84,7 +81,7 @@ export function openStage(id: Stage["id"]): void {
 }
 
 export function closeStage(): void {
-  system.set((s) => ({ ...s, opened: null, step: null }));
+  system.set((s) => ({ ...s, opened: null, step: null, playing: false }));
   clearCards();
 }
 
@@ -95,6 +92,8 @@ export function selectStep(k: number, push = true): void {
   if (!stage || !part) return;
   system.set((s) => ({ ...s, opened: stage.id, step: k }));
   if (push) pushCard(stepCard(stage, part, k));
+  const first = part.use?.[0]?.[0];
+  if (first) void walkToFile(first); // the explorer walks to the step's code
 }
 
 export function clearStep(): void {
@@ -103,4 +102,41 @@ export function clearStep(): void {
 
 export function hoverFiles(files: string[] | null): void {
   system.set((s) => ({ ...s, hover: files }));
+}
+
+// ---------- Play the import path ----------
+
+const pause = (s: number) => new Promise((r) => setTimeout(r, s * 1000));
+let playRun = 0;
+
+/** Walk the whole import call path: each COLLECT step, each of its files, each function card. */
+export async function playImportPath(): Promise<void> {
+  if (system.get().playing) {
+    system.set((s) => ({ ...s, playing: false }));
+    return;
+  }
+  const run = ++playRun;
+  const alive = () => system.get().playing && run === playRun;
+  system.set((s) => ({ ...s, playing: true }));
+  if (system.get().opened !== "collect") {
+    if (system.get().opened) closeStage();
+    system.set((s) => ({ ...s, playing: true }));
+    openStage("collect");
+    await pause(1.8);
+  }
+  const parts = STAGES.find((st) => st.id === "collect")?.parts ?? [];
+  for (let k = 0; k < parts.length && alive(); k++) {
+    selectStep(k);
+    await pause(1.2);
+    for (const [file, ids] of parts[k]?.use ?? []) {
+      if (!alive()) break;
+      await walkToFile(file);
+      for (const id of ids) {
+        if (!alive()) break;
+        await goFn(id, { replaceTop: true });
+        await pause(2.6);
+      }
+    }
+  }
+  if (run === playRun) system.set((s) => ({ ...s, playing: false }));
 }
