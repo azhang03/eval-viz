@@ -1,0 +1,2 @@
+.app { height: 100%; display: grid; grid-template-rows: 52px minmax(0, 1fr); gap: 10px; padding: 0 14px 14px; }
+.app-main { min-height: 0; }

@@ -1,0 +1,36 @@
+/* Theme C, "factory floor". The palette and fonts are fixed in the viz decisions (5). */
+:root {
+  --bg: #efe6d6;
+  --paper: #fffaf2;
+  --ink: #2b2622;
+  --ink-2: #5d554c;
+  --ink-dim: #8a7f72;
+  --line: rgba(43, 38, 34, 0.14);
+  --terra: #d4673f;
+  --mustard: #e9b440;
+  --mustard-soft: #f6dc9a;
+  --teal: #2f8f8a;
+  --indigo: #5b6fb5;
+  --ghost: #7d93a8;
+  --pass: #2f8f5a;
+  --reject: #c8432f;
+  --font-body: "Archivo", sans-serif;
+  --font-display: "Archivo Black", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.45 var(--font-body); }
+code, .mono { font-family: var(--font-mono); }
+code { font-size: 0.88em; background: rgba(43, 38, 34, 0.06); padding: 1px 5px; border-radius: 4px; }
+
+/* the chunky pill button used across the site */
+.btn {
+  font: 800 12px var(--font-body); font-stretch: 112%; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer;
+  background: var(--paper); color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; padding: 7px 14px;
+  box-shadow: 0 3px 0 var(--ink);
+}
+.btn:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn:disabled { cursor: default; opacity: 0.45; }
