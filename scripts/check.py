@@ -20,6 +20,7 @@ import hashlib
 import json
 import subprocess
 import sys
+from types import SimpleNamespace
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -56,7 +57,10 @@ def load(repo: Path, rev: str, path: str, names: set[str]) -> dict:
     if missing:
         raise SystemExit(f"{path} at {rev}: not found: {', '.join(sorted(missing))}")
     namespace: dict = {"hashlib": hashlib, "__name__": "cmeval_check"}
-    exec(compile(ast.Module(body=picked, type_ignores=[]), f"{rev}:{path}", "exec"), namespace)
+    # postponed annotations, so type names from other modules (Hit, Span) need not exist here
+    future = ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0)
+    module = ast.fix_missing_locations(ast.Module(body=[future, *picked], type_ignores=[]))
+    exec(compile(module, f"{rev}:{path}", "exec"), namespace)
     return namespace
 
 
@@ -96,11 +100,27 @@ def main(argv: list[str] | None = None) -> int:
         start = find_hunk(base, w, stated_line - first, lowest_line - first)
         hunk.append({"name": name, "want": w, "stated": stated_line - first, "lowest": lowest_line - first, "found": start})
 
+    # match rule cases: the hits of the match-rule view against the 10908 gold function and class
+    matching = load(args.repo, rev, "eval/src/cmeval/metrics/matching.py", {"line_iou", "hit_matches"})
+    path = "sklearn/feature_extraction/text.py"
+    spans = {"function": (994, 999), "class": (559, 999)}
+    hits = {"A": (path, 995, 997), "B": (path, 992, 999), "C": (path, 985, 999), "D": (path, 559, 999),
+            "other file": ("sklearn/other.py", 994, 999), "no lines": (path, None, None), "edge": (path, 990, 999)}
+    match = []
+    for name, (hpath, start, end) in hits.items():
+        for level, (s0, s1) in spans.items():
+            for iou in (0.3, 0.5, 0.7):
+                hit = SimpleNamespace(path=hpath, start_line=start, end_line=end)
+                span = SimpleNamespace(path=path, start=s0, end=s1)
+                value = matching["line_iou"](start, end, s0, s1) if start is not None else None
+                match.append({"hit": name, "level": level, "iou": iou, "hitPath": hpath, "start": start, "end": end,
+                              "span": [s0, s1], "lineIou": value, "matches": matching["hit_matches"](hit, span, iou)})
+
     out = ROOT / "data" / "checks" / "expected.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    result = {"rev": rev, "seed": tasks["DEFAULT_SPLIT_SEED"], "devPercent": tasks["DEV_PERCENT"], "split": split, "hunk": hunk}
+    result = {"rev": rev, "seed": tasks["DEFAULT_SPLIT_SEED"], "devPercent": tasks["DEV_PERCENT"], "split": split, "hunk": hunk, "match": match}
     out.write_text(json.dumps(result, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"{out.relative_to(ROOT)}: {len(split)} split cases, {len(hunk)} hunk cases, from codemem {rev}")
+    print(f"{out.relative_to(ROOT)}: {len(split)} split cases, {len(hunk)} hunk cases, {len(match)} match cases, from codemem {rev}")
     return 0
 
 
