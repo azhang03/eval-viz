@@ -7,6 +7,8 @@
 .rail .empty li::marker { font: 600 11px var(--font-mono); color: var(--terra); }
 .legend { display: grid; gap: 8px; font-size: 13px; }
 .legend span { display: inline-block; width: 18px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 8px; }
+.legend span.solid { background: var(--terra); box-shadow: inset 0 -4px 0 var(--ink); }
+.legend span.crane { background: var(--teal); border-top: 3px solid var(--mustard); }
 .legend span.dashed { border: 1.5px dashed var(--ghost); }
 
 .card { position: absolute; left: 2px; right: 2px; top: 0; bottom: 6px; background: var(--paper); border-radius: 18px; overflow: hidden;

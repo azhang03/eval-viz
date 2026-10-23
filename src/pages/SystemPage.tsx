@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { Rail } from "../components/rail/Rail";
 import { Breadcrumbs } from "../components/system/Breadcrumbs";
-import { FloorStandIn } from "../components/system/FloorStandIn";
+import { Floor } from "../components/system/Floor";
 import { ExplorerStandIn } from "../components/system/ExplorerStandIn";
 import { closeStage } from "../components/system/actions";
 import "./SystemPage.css";
@@ -31,7 +31,7 @@ export function SystemPage() {
     <div className="system" ref={grid}>
       <section className="floor" data-area="floor" onPointerDown={() => focus(SPLIT.floor)}>
         <Breadcrumbs />
-        <FloorStandIn />
+        <Floor />
       </section>
       <div className="explorer-cell" onPointerDown={() => focus(SPLIT.explorer)}>
         <ExplorerStandIn />

@@ -1,3 +1,4 @@
+import { STAGES } from "../../../content/stages";
 import { rail } from "../../state/rail";
 import { useStore } from "../../state/store";
 import { CardStack } from "./CardStack";
@@ -18,9 +19,9 @@ export function Rail({ onLast }: { onLast: () => void }) {
             <li>Click a file or a function for its own card. Cards stack like files in a cabinet. Click a tab to go back.</li>
           </ol>
           <div className="legend">
-            <div><span style={{ background: "var(--terra)" }} />Built</div>
-            <div><span style={{ background: "var(--teal)" }} />Being built (part of the stage exists)</div>
-            <div><span className="dashed" />Planned</div>
+            <div><span className="solid" />Solid machine: built</div>
+            {STAGES.some((st) => st.status === "partial") && <div><span className="crane" />Machine with a crane: being built</div>}
+            <div><span className="dashed" />Dashed outline: planned</div>
           </div>
         </div>
       )}

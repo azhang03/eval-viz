@@ -15,20 +15,6 @@
 .crumbs .c.cur { background: var(--ink); color: var(--paper); }
 .crumbs .sep { color: var(--ink-dim); }
 
-.standin { position: absolute; inset: 0; display: grid; place-content: center; gap: 18px; padding: 60px 24px 24px; }
-.standin-note { text-align: center; font: 500 11px var(--font-mono); color: var(--ink-dim); }
-.tiles { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-.tile { min-width: 150px; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--ink); background: var(--paper); box-shadow: 0 4px 0 var(--ink);
-  cursor: pointer; text-align: left; display: grid; gap: 4px; font: inherit; color: var(--ink); transition: transform 0.15s; }
-.tile:hover:not(:disabled) { transform: translateY(-3px); }
-.tile b { font: 800 13px var(--font-body); font-stretch: 112%; text-transform: uppercase; letter-spacing: 0.04em; }
-.tile small { font: 500 10.5px var(--font-mono); color: var(--ink-dim); }
-.tile.built { background: #f6d7c8; }
-.tile.partial { background: #cfe6e3; }
-.tile.planned { border-style: dashed; border-color: var(--ghost); box-shadow: none; background: transparent; color: var(--ghost); }
-.tile:disabled { cursor: default; }
-.tile.sel { background: var(--mustard); }
-
 .finder { background: var(--paper); border-radius: 18px; box-shadow: 0 0 0 2px var(--ink), 0 5px 0 var(--ink); display: grid; grid-template-rows: 46px minmax(0, 1fr); overflow: hidden; margin-bottom: 5px; }
 .finder .tbar { display: flex; align-items: center; gap: 12px; padding: 0 14px; border-bottom: 1.5px solid var(--line); background: #f8f0e3; }
 .finder .dots { display: flex; gap: 7px; }

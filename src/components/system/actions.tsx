@@ -78,13 +78,13 @@ function stepCard(stage: Stage, part: Part, k: number): Card {
 export function openStage(id: Stage["id"]): void {
   const stage = STAGES.find((s) => s.id === id);
   if (!stage?.parts) return;
-  system.set({ opened: id, step: null });
+  system.set((s) => ({ ...s, opened: id, step: null }));
   clearCards();
   pushCard(stageCard(stage));
 }
 
 export function closeStage(): void {
-  system.set({ opened: null, step: null });
+  system.set((s) => ({ ...s, opened: null, step: null }));
   clearCards();
 }
 
@@ -93,10 +93,14 @@ export function selectStep(k: number, push = true): void {
   const stage = STAGES.find((s) => s.id === opened);
   const part = stage?.parts?.[k];
   if (!stage || !part) return;
-  system.set({ opened: stage.id, step: k });
+  system.set((s) => ({ ...s, opened: stage.id, step: k }));
   if (push) pushCard(stepCard(stage, part, k));
 }
 
 export function clearStep(): void {
   system.set((s) => ({ ...s, step: null }));
+}
+
+export function hoverFiles(files: string[] | null): void {
+  system.set((s) => ({ ...s, hover: files }));
 }
