@@ -6,6 +6,8 @@ import { gsap } from "gsap";
 import { Rail } from "../components/rail/Rail";
 import { Breadcrumbs } from "../components/system/Breadcrumbs";
 import { Floor } from "../components/system/Floor";
+import { LookButton } from "../components/system/LookButton";
+import { CloserOverlay } from "../components/system/CloserOverlay";
 import { Explorer } from "../components/system/Explorer";
 import { closeStage } from "../components/system/actions";
 import "./SystemPage.css";
@@ -32,6 +34,8 @@ export function SystemPage() {
       <section className="floor" data-area="floor" onPointerDown={() => focus(SPLIT.floor)}>
         <Breadcrumbs />
         <Floor />
+        <LookButton />
+        <CloserOverlay />
       </section>
       <div className="explorer-cell" onPointerDown={() => focus(SPLIT.explorer)}>
         <Explorer />

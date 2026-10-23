@@ -137,5 +137,595 @@
    "lowest": 0,
    "found": 31
   }
+ ],
+ "match": [
+  {
+   "hit": "A",
+   "level": "function",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 995,
+   "end": 997,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.5,
+   "matches": true
+  },
+  {
+   "hit": "A",
+   "level": "function",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 995,
+   "end": 997,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.5,
+   "matches": true
+  },
+  {
+   "hit": "A",
+   "level": "function",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 995,
+   "end": 997,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.5,
+   "matches": true
+  },
+  {
+   "hit": "A",
+   "level": "class",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 995,
+   "end": 997,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.006802721088435374,
+   "matches": true
+  },
+  {
+   "hit": "A",
+   "level": "class",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 995,
+   "end": 997,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.006802721088435374,
+   "matches": true
+  },
+  {
+   "hit": "A",
+   "level": "class",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 995,
+   "end": 997,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.006802721088435374,
+   "matches": true
+  },
+  {
+   "hit": "B",
+   "level": "function",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 992,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.75,
+   "matches": true
+  },
+  {
+   "hit": "B",
+   "level": "function",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 992,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.75,
+   "matches": true
+  },
+  {
+   "hit": "B",
+   "level": "function",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 992,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.75,
+   "matches": true
+  },
+  {
+   "hit": "B",
+   "level": "class",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 992,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.018140589569160998,
+   "matches": true
+  },
+  {
+   "hit": "B",
+   "level": "class",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 992,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.018140589569160998,
+   "matches": true
+  },
+  {
+   "hit": "B",
+   "level": "class",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 992,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.018140589569160998,
+   "matches": true
+  },
+  {
+   "hit": "C",
+   "level": "function",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 985,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.4,
+   "matches": true
+  },
+  {
+   "hit": "C",
+   "level": "function",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 985,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.4,
+   "matches": false
+  },
+  {
+   "hit": "C",
+   "level": "function",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 985,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.4,
+   "matches": false
+  },
+  {
+   "hit": "C",
+   "level": "class",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 985,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.034013605442176874,
+   "matches": true
+  },
+  {
+   "hit": "C",
+   "level": "class",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 985,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.034013605442176874,
+   "matches": true
+  },
+  {
+   "hit": "C",
+   "level": "class",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 985,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.034013605442176874,
+   "matches": true
+  },
+  {
+   "hit": "D",
+   "level": "function",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 559,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.013605442176870748,
+   "matches": false
+  },
+  {
+   "hit": "D",
+   "level": "function",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 559,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.013605442176870748,
+   "matches": false
+  },
+  {
+   "hit": "D",
+   "level": "function",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 559,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.013605442176870748,
+   "matches": false
+  },
+  {
+   "hit": "D",
+   "level": "class",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 559,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 1.0,
+   "matches": true
+  },
+  {
+   "hit": "D",
+   "level": "class",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 559,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 1.0,
+   "matches": true
+  },
+  {
+   "hit": "D",
+   "level": "class",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 559,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 1.0,
+   "matches": true
+  },
+  {
+   "hit": "other file",
+   "level": "function",
+   "iou": 0.3,
+   "hitPath": "sklearn/other.py",
+   "start": 994,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 1.0,
+   "matches": false
+  },
+  {
+   "hit": "other file",
+   "level": "function",
+   "iou": 0.5,
+   "hitPath": "sklearn/other.py",
+   "start": 994,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 1.0,
+   "matches": false
+  },
+  {
+   "hit": "other file",
+   "level": "function",
+   "iou": 0.7,
+   "hitPath": "sklearn/other.py",
+   "start": 994,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 1.0,
+   "matches": false
+  },
+  {
+   "hit": "other file",
+   "level": "class",
+   "iou": 0.3,
+   "hitPath": "sklearn/other.py",
+   "start": 994,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.013605442176870748,
+   "matches": false
+  },
+  {
+   "hit": "other file",
+   "level": "class",
+   "iou": 0.5,
+   "hitPath": "sklearn/other.py",
+   "start": 994,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.013605442176870748,
+   "matches": false
+  },
+  {
+   "hit": "other file",
+   "level": "class",
+   "iou": 0.7,
+   "hitPath": "sklearn/other.py",
+   "start": 994,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.013605442176870748,
+   "matches": false
+  },
+  {
+   "hit": "no lines",
+   "level": "function",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": null,
+   "end": null,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": null,
+   "matches": false
+  },
+  {
+   "hit": "no lines",
+   "level": "function",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": null,
+   "end": null,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": null,
+   "matches": false
+  },
+  {
+   "hit": "no lines",
+   "level": "function",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": null,
+   "end": null,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": null,
+   "matches": false
+  },
+  {
+   "hit": "no lines",
+   "level": "class",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": null,
+   "end": null,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": null,
+   "matches": false
+  },
+  {
+   "hit": "no lines",
+   "level": "class",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": null,
+   "end": null,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": null,
+   "matches": false
+  },
+  {
+   "hit": "no lines",
+   "level": "class",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": null,
+   "end": null,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": null,
+   "matches": false
+  },
+  {
+   "hit": "edge",
+   "level": "function",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 990,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.6,
+   "matches": true
+  },
+  {
+   "hit": "edge",
+   "level": "function",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 990,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.6,
+   "matches": true
+  },
+  {
+   "hit": "edge",
+   "level": "function",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 990,
+   "end": 999,
+   "span": [
+    994,
+    999
+   ],
+   "lineIou": 0.6,
+   "matches": false
+  },
+  {
+   "hit": "edge",
+   "level": "class",
+   "iou": 0.3,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 990,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.022675736961451247,
+   "matches": true
+  },
+  {
+   "hit": "edge",
+   "level": "class",
+   "iou": 0.5,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 990,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.022675736961451247,
+   "matches": true
+  },
+  {
+   "hit": "edge",
+   "level": "class",
+   "iou": 0.7,
+   "hitPath": "sklearn/feature_extraction/text.py",
+   "start": 990,
+   "end": 999,
+   "span": [
+    559,
+    999
+   ],
+   "lineIou": 0.022675736961451247,
+   "matches": true
+  }
  ]
 }

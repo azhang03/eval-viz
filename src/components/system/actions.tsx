@@ -5,6 +5,7 @@ import { clearCards, pushCard, type Card } from "../../state/rail";
 import { system } from "../../state/system";
 import { Html } from "../Html";
 import { FileChip, FnChip, goFn, walkToFile } from "./cards";
+import { openCloser } from "../../closers/host";
 
 const fileName = (path: string) => path.split("/").pop() ?? path;
 const short = (path: string) => path.replace("eval/src/cmeval/", "");
@@ -62,7 +63,7 @@ function stepCard(stage: Stage, part: Part, k: number): Card {
           <>
             <h4>Design decision</h4>
             <div className="chips">
-              <span className="chip look" title="Look-closer views come in V1-02 B4">look closer: how it decides &rsaquo;</span>
+              <span className="chip look" onClick={() => openCloser(part.closer!)}>look closer: how it decides &rsaquo;</span>
             </div>
           </>
         )}

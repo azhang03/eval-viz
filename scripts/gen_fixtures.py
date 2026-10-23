@@ -106,7 +106,8 @@ def main(argv: list[str] | None = None) -> int:
     }
     out = ROOT / "data" / "fixtures" / "10908.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(fixture, sort_keys=True, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    # no sort_keys: the record keeps the field order of the task file, as the labeler view shows it
+    out.write_text(json.dumps(fixture, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"{out.relative_to(ROOT)}: task from {rev}, hunk {stated + 1} -> {found + 1} (offset +{found - stated})")
     return 0
 
