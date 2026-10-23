@@ -1,6 +1,6 @@
 // The pipeline map: stages, their steps, and the code that does each step.
 // It links the 3D floor (page 1) to the explorer. Kept by hand; /vizup proposes changes.
-// The stage status follows the newest manifest (here 5146b46).
+// The stage status follows the newest manifest (here 5a92706).
 
 import type { DefId, RepoPath } from "../src/data/types";
 
@@ -67,8 +67,8 @@ export const STAGES: Stage[] = [
         d: "grep plus the step an agent takes next: it returns the functions around the matching lines (Decision 4)." },
       { n: "codemem", c: 0x6c5a49, use: [[SRC + "adapters/codemem.py", ["cmeval.adapters.codemem.CodememRetriever"]]],
         d: "The only file in cmeval that imports codemem. It plugs codemem in through the same interface." },
-      { n: "Runner", c: 0x2f8f8a, use: [[SRC + "run.py", ["cmeval.run.run", "cmeval.run.order_tasks"]], [SRC + "cli.py", ["cmeval.cli.cmd_run"]]],
-        d: "Runs every system on every task. For each repo, tasks go in base-commit date order, so one index moves forward with updates (Decision 5)." },
+      { n: "Runner", c: 0x2f8f8a, use: [[SRC + "run.py", ["cmeval.run.run", "cmeval.run.order_tasks"]], [SRC + "files.py", ["cmeval.files.FileLock", "cmeval.files.drop_unfinished_line"]], [SRC + "repos.py", ["cmeval.repos.discard_live"]], [SRC + "cli.py", ["cmeval.cli.cmd_run"]]],
+        d: "Runs every system on every task. For each repo, tasks go in base-commit date order, so one index moves forward with updates (Decision 5). A stopped run resumes with the same results." },
     ] },
   { id: "score", name: "Score", feat: "F3", status: "built", out: "metrics tables", color: 0x5b6fb5,
     text: "Reads saved run files and grades hits against gold at file, class, and function level.",
@@ -81,8 +81,19 @@ export const STAGES: Stage[] = [
         d: "Tokens to the first relevant hit, and recall inside a token budget (Decision 6)." },
       { n: "Latency", c: 0x5b6fb5, use: [[SRC + "metrics/latency.py", ["cmeval.metrics.latency.search_latency", "cmeval.metrics.latency.index_costs"]]],
         d: "Search time, build and update time, and index size, from the run files." },
-      { n: "Score a run", c: 0x6c5a49, use: [[SRC + "score.py", ["cmeval.score.score"]], [SRC + "cli.py", ["cmeval.cli.cmd_score"]]],
+      { n: "Score a run", c: 0x6c5a49, use: [[SRC + "score.py", ["cmeval.score.score", "cmeval.score.run_tasks"]], [SRC + "cli.py", ["cmeval.cli.cmd_score"]]],
         d: "Reads a saved run and writes the metrics next to its files." },
     ] },
-  { id: "report", name: "Report", feat: "F3", status: "planned", out: "tables, plots, tests", text: "Turns metrics into tables, plots, and paired tests. grep vs. codemem. Planned in F3 B3." },
+  { id: "report", name: "Report", feat: "F3", status: "built", out: "report.md", color: 0xe9b440,
+    text: "Checks that index updates are valid, then turns the scores into tables with intervals and paired tests against the grep-fn baseline.",
+    parts: [
+      { n: "Update vs. rebuild", c: 0x2f8f8a, use: [[SRC + "compare.py", ["cmeval.compare.compare", "cmeval.compare.in_code"]], [SRC + "cli.py", ["cmeval.cli.cmd_compare"]]],
+        d: "Decision 5: a run with index updates and a run with full rebuilds must find the same code. Required before any results are reported." },
+      { n: "Intervals", c: 0x5b6fb5, use: [[SRC + "metrics/stats.py", ["cmeval.metrics.stats.bootstrap_ci", "cmeval.metrics.stats.resample_indexes", "cmeval.metrics.stats.quantile"]]],
+        d: "A 95% bootstrap interval for each mean: 10,000 resamples with a fixed seed." },
+      { n: "Paired tests", c: 0xd4673f, use: [[SRC + "metrics/stats.py", ["cmeval.metrics.stats.paired_bootstrap_ci", "cmeval.metrics.stats.wilcoxon", "cmeval.metrics.stats.holm"]]],
+        d: "Each system against the baseline on the same tasks: the paired difference, the Wilcoxon test, and one Holm correction over the primary tests." },
+      { n: "Write report", c: 0x6c5a49, use: [[SRC + "report.py", ["cmeval.report.report", "cmeval.report.Scores"]], [SRC + "cli.py", ["cmeval.cli.cmd_report"]]],
+        d: "<code>cmeval report</code> writes <code>report.md</code>: main tables, paired comparisons, groups, the IoU check, latency, and task counts." },
+    ] },
 ];

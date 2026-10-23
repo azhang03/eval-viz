@@ -32,8 +32,10 @@
             { "id": "B1", "title": "The runner", "commit": "ae9fc57", "date": "2026-10-22", "added": "run.py runs every task on every system, moves one index forward through commits, and saves the hits." },
             { "id": "B2", "title": "Metrics and scoring", "commit": "3c6d2d1", "date": "2026-10-23", "added": "metrics/ (matching, accuracy, tokens, latency) and score.py. The match rule from Decision 2 is now code." },
             { "id": "cross-machine", "title": "Runs from another machine", "commit": "5146b46", "date": "2026-10-23", "added": "cmeval score --tasks FILE scores a run made on another machine. Clones keep line endings as they are." },
-            { "id": "B3", "title": "Report and first numbers", "commit": null, "date": null, "added": "Planned: cmeval report, paired tests, and the first full run." },
-            { "id": "B4", "title": "Update vs. rebuild check", "commit": null, "date": null, "added": "Planned: required before any results are reported (Decision 5)." }
+            { "id": "resume", "title": "Resume with the same results", "commit": "22513fc", "date": "2026-10-23", "added": "A stopped run resumes with identical hits: a new worktree for each repo, an unfinished last line is cut, and a stopped build starts again from an empty folder." },
+            { "id": "B4", "title": "Update vs. rebuild check", "commit": "5c3af80", "date": "2026-10-23", "added": "compare.py and cmeval compare: two runs of the same tasks, one with index updates and one with full rebuilds, must give the same results (Decision 5)." },
+            { "id": "review", "title": "Review fixes", "commit": "d5c2013", "date": "2026-10-23", "added": "Run path fixes from the code review: a lock on the run folder, marker files for stopped builds and updates, and a resume refused if the code or an index key changed." },
+            { "id": "B3", "title": "Report and first numbers", "commit": "5a92706", "date": "2026-10-23", "added": "metrics/stats.py (bootstrap, Wilcoxon, Holm) and report.py with cmeval report. First full run on swebv-dev50." }
           ]
         },
         {

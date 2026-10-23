@@ -120,7 +120,7 @@ export class FloorScene {
     const planEnd = 10.2;
     const plan = ghostBox(planEnd - x1, 0.35, 1.3);
     plan.position.set((x1 + planEnd) / 2, 0.18, 0);
-    if (x1 < planEnd - 0.5) this.scene.add(plan);
+    if (lastBuilt < this.stages.length - 1 && x1 < planEnd - 0.5) this.scene.add(plan);  // no planned stage: no ghost belt
     // crates travel between each pair of built machines
     const crateGeo = rounded(0.62, 0.5, 0.62, 2, 0.06);
     for (let i = 0; i + 1 < this.stages.length; i++) {
