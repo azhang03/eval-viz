@@ -1,0 +1,47 @@
+{
+  "phases": [
+    {
+      "id": "p1",
+      "title": "Eval foundation",
+      "features": [
+        {
+          "id": "F1",
+          "title": "Task format and labels",
+          "batches": [
+            { "id": "B1", "title": "Package skeleton and task schema", "commit": "b2b2f1c", "date": "2026-10-22", "added": "The cmeval package, the task schema (the answer key), the dev/test split rule, and cmeval validate." },
+            { "id": "B2", "title": "Diff reader and code time machine", "commit": "61ee8f4", "date": "2026-10-22", "added": "patches.py reads a fix diff and aligns hunks to the base file. repos.py gives any file at any commit from a bare clone." },
+            { "id": "B3", "title": "The labeler", "commit": "2dbc8e9", "date": "2026-10-22", "added": "labels.py finds the gold files, classes, and functions that a fix changed, with tree-sitter." },
+            { "id": "B4", "title": "SWE-bench Verified importer", "commit": "b51eb96", "date": "2026-10-22", "added": "importers/swebench.py and the first answer key, tasks/swebv-dev50.jsonl (50 dev tasks)." },
+            { "id": "review", "title": "Review fixes", "commit": "4ec55f4", "date": "2026-10-22", "added": "9 fixes from the code review. Labeler version 2 (cmeval-labels/2)." }
+          ]
+        },
+        {
+          "id": "F2",
+          "title": "Retriever port and adapters",
+          "batches": [
+            { "id": "B1", "title": "The plug", "commit": "3f31fc9", "date": "2026-10-22", "added": "retriever.py (Retriever, Hit, IndexReport, check_hits), systems.py (system configs), and a fake system for tests." },
+            { "id": "B2", "title": "grep and grep-fn", "commit": "693c95b", "date": "2026-10-22", "added": "The two grep baselines and the keyword extractor. grep returns files; grep-fn returns the functions around the matching lines." },
+            { "id": "B3", "title": "codemem adapter", "commit": "b79742b", "date": "2026-10-22", "added": "adapters/codemem.py plugs codemem into the suite through the same interface." },
+            { "id": "review", "title": "Review fixes", "commit": "788e32e", "date": "2026-10-22", "added": "Adapter fixes from the code review. F2 merged in PR #3." }
+          ]
+        },
+        {
+          "id": "F3",
+          "title": "Runner, metrics, and report",
+          "batches": [
+            { "id": "B1", "title": "The runner", "commit": "ae9fc57", "date": "2026-10-22", "added": "run.py runs every task on every system, moves one index forward through commits, and saves the hits." },
+            { "id": "B2", "title": "Metrics and scoring", "commit": "3c6d2d1", "date": "2026-10-23", "added": "metrics/ (matching, accuracy, tokens, latency) and score.py. The match rule from Decision 2 is now code." },
+            { "id": "cross-machine", "title": "Runs from another machine", "commit": "5146b46", "date": "2026-10-23", "added": "cmeval score --tasks FILE scores a run made on another machine. Clones keep line endings as they are." },
+            { "id": "B3", "title": "Report and first numbers", "commit": null, "date": null, "added": "Planned: cmeval report, paired tests, and the first full run." },
+            { "id": "B4", "title": "Update vs. rebuild check", "commit": null, "date": null, "added": "Planned: required before any results are reported (Decision 5)." }
+          ]
+        },
+        {
+          "id": "F4",
+          "title": "Fresh-task collector",
+          "batches": []
+        }
+      ]
+    }
+  ]
+}

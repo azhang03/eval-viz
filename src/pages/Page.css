@@ -1,0 +1,1 @@
+.page-frame { height: 100%; border-radius: 20px; border: 2px dashed rgba(43, 38, 34, 0.22); display: grid; place-items: center; color: var(--ink-2); }

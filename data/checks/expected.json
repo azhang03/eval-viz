@@ -1,0 +1,141 @@
+{
+ "rev": "5146b46",
+ "seed": "cmeval-split-1",
+ "devPercent": 20,
+ "split": [
+  {
+   "id": "scikit-learn__scikit-learn-10908",
+   "digest": "da42fe5ccfbcad8f61be94843b7c3cad74c5cad148b8e5b554b5b8775b28abf0",
+   "split": "test"
+  },
+  {
+   "id": "django__django-11099",
+   "digest": "4415e600d2808432f9cac104309c843186f119ce1fd9ab7138c0778ffdb4c3a8",
+   "split": "dev"
+  },
+  {
+   "id": "pandas-dev__pandas-60123",
+   "digest": "8f07616718f1c605a7256d025dc41d179f2d1320db0096522296fff4a14e9f17",
+   "split": "test"
+  },
+  {
+   "id": "django__django-19001",
+   "digest": "e02971ace1e225e341555c352870281a9bfdc81668aaa19b7d0ded0d9d4b5474",
+   "split": "test"
+  },
+  {
+   "id": "pytorch__pytorch-150321",
+   "digest": "6621a12be7beb300b6cd6cedf1d659e3c8fe96ea2cebe2d6d3181fe3be064c42",
+   "split": "test"
+  },
+  {
+   "id": "vercel__next.js-80412",
+   "digest": "83278fece1bba6674a4b6e4d2c1a549e6981fdbfe742c82c16da7dad0e0642b1",
+   "split": "test"
+  },
+  {
+   "id": "rust-lang__rust-140000",
+   "digest": "a52f4c4af334032fd78d031735b47673eb8e9b53d18ef262d675cad1849bbfd8",
+   "split": "test"
+  },
+  {
+   "id": "fresh__repo-1037",
+   "digest": "2ed018a3308f7f70e98df414ca00e1d24ec60fccea2f2e68bf528da1e4f37968",
+   "split": "dev"
+  },
+  {
+   "id": "fresh__repo-1999",
+   "digest": "c878419cf8f5b1b451484a45b97aba03fb6b68eeab9280ed890396da2cefe23b",
+   "split": "dev"
+  },
+  {
+   "id": "",
+   "digest": "06d37703264c6b36b544c8d598f1089a8fa047bdd904e5ffa07e1cd823edcc6c",
+   "split": "test"
+  },
+  {
+   "id": "a task id with spaces and ünïcode",
+   "digest": "c5fb4edb5024da328bd203db27f3b956faa5a76b7e53e92cfb495f2eb7b15171",
+   "split": "test"
+  }
+ ],
+ "hunk": [
+  {
+   "name": "the real hunk",
+   "want": [
+    "",
+    "    def get_feature_names(self):",
+    "        \"\"\"Array mapping from feature integer indices to feature name\"\"\"",
+    "        self._check_vocabulary()",
+    "",
+    "        return [t for t, i in sorted(six.iteritems(self.vocabulary_),"
+   ],
+   "stated": 31,
+   "lowest": 0,
+   "found": 53
+  },
+  {
+   "name": "stated at the real place",
+   "want": [
+    "",
+    "    def get_feature_names(self):",
+    "        \"\"\"Array mapping from feature integer indices to feature name\"\"\"",
+    "        self._check_vocabulary()",
+    "",
+    "        return [t for t, i in sorted(six.iteritems(self.vocabulary_),"
+   ],
+   "stated": 53,
+   "lowest": 0,
+   "found": 53
+  },
+  {
+   "name": "lowest bound below the match",
+   "want": [
+    "",
+    "    def get_feature_names(self):",
+    "        \"\"\"Array mapping from feature integer indices to feature name\"\"\"",
+    "        self._check_vocabulary()",
+    "",
+    "        return [t for t, i in sorted(six.iteritems(self.vocabulary_),"
+   ],
+   "stated": 31,
+   "lowest": 52,
+   "found": 53
+  },
+  {
+   "name": "lowest bound above the match",
+   "want": [
+    "",
+    "    def get_feature_names(self):",
+    "        \"\"\"Array mapping from feature integer indices to feature name\"\"\"",
+    "        self._check_vocabulary()",
+    "",
+    "        return [t for t, i in sorted(six.iteritems(self.vocabulary_),"
+   ],
+   "stated": 31,
+   "lowest": 54,
+   "found": null
+  },
+  {
+   "name": "changed docstring: no match",
+   "want": [
+    "",
+    "    def get_feature_names(self):",
+    "        \"\"\"Return a list of feature names.\"\"\"",
+    "        self._check_vocabulary()",
+    "",
+    "        return [t for t, i in sorted(six.iteritems(self.vocabulary_),"
+   ],
+   "stated": 31,
+   "lowest": 0,
+   "found": null
+  },
+  {
+   "name": "empty hunk",
+   "want": [],
+   "stated": 31,
+   "lowest": 0,
+   "found": 31
+  }
+ ]
+}

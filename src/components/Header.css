@@ -1,0 +1,12 @@
+.header { display: flex; align-items: center; gap: 18px; }
+.brand { font: 400 20px var(--font-display); letter-spacing: -0.01em; }
+.brand small { font: 500 11px var(--font-mono); color: var(--ink-dim); margin-left: 8px; letter-spacing: 0; }
+.tabs { position: relative; display: flex; gap: 4px; background: rgba(43, 38, 34, 0.06); padding: 4px; border-radius: 999px; }
+.tabs .pill { position: absolute; left: 0; top: 4px; bottom: 4px; border-radius: 999px; background: var(--paper); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); }
+.tabs button {
+  position: relative; border: 0; background: none; cursor: pointer;
+  font: 700 12px var(--font-body); font-stretch: 112%; text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 6px 14px; border-radius: 999px; color: var(--ink-dim); transition: color 0.2s;
+}
+.tabs button.on { color: var(--ink); }
+.spacer { flex: 1; }
