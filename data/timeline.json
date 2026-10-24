@@ -37,9 +37,9 @@
             { "id": "review", "title": "Review fixes", "commit": "d5c2013", "date": "2026-10-23", "added": "Run path fixes from the code review: a lock on the run folder, marker files for stopped builds and updates, and a resume refused if the code or an index key changed." },
             { "id": "B3", "title": "Report and first numbers", "commit": "5a92706", "date": "2026-10-23", "added": "metrics/stats.py (bootstrap, Wilcoxon, Holm) and report.py with cmeval report. First full run on swebv-dev50." },
             { "id": "grep-fn-plus", "title": "A stronger grep baseline", "commit": "93f7db1", "date": "2026-10-23", "added": "grep-fn options: Python files only, IDF weights, clean keywords, tests last. All four are grep-fn-plus, the baseline of the primary tests." },
-            { "id": "merge", "title": "Merge runs", "commit": "12d306c", "date": "2026-10-23", "added": "cmeval merge adds the systems of one run to another run of the same tasks, so one report can show them together." },
-            { "id": "review2", "title": "Second review fixes", "commit": "c6b2933", "date": "2026-10-23", "added": "The primary systems are an explicit list, so the Holm family stays 6. Fixes in scoring, report, merge, and grep-fn. grep-fn-plus in the grep config." },
-            { "id": "results", "title": "First dev results", "commit": "f70e851", "date": "2026-10-23", "added": "eval/results/: the metrics of the final dev run and the update vs. rebuild check. F3 merged into main (PR #4)." }
+            { "id": "merge", "title": "Merge runs", "commit": "12d306c", "date": "2026-10-23", "added": "cmeval merge writes a new run with the systems of two runs of the same tasks, so one report can show them together. The two runs do not change." },
+            { "id": "review2", "title": "Second review fixes", "commit": "c6b2933", "date": "2026-10-23", "added": "The primary systems are an explicit list, so the Holm family stays 6. compare checks k and the tasks file, and warns on other index modes or codemem code. Fixes in grep-fn, merge, stats, and the report. grep-fn-plus in the grep config." },
+            { "id": "results", "title": "Final dev run in git", "commit": "f70e851", "date": "2026-10-23", "added": "eval/results/: the metrics of the final dev run (2026-10-23-dev50-final) and the update vs. rebuild check. F3 merged into main (PR #4)." }
           ]
         },
         {
