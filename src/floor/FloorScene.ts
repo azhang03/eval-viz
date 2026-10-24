@@ -10,6 +10,7 @@ import { COLOR, disposeTree, ghostBox, mat, rbox, rounded } from "./kit";
 import { Overlay, type Tag } from "./overlay";
 import { assemblyView, boxesView, type Cam, type View } from "./views";
 import { runView } from "./runView";
+import { scoreView } from "./scoreView";
 
 export type FloorHandlers = {
   openStage: (id: Stage["id"]) => void;
@@ -337,7 +338,7 @@ export class FloorScene {
     this.beltPlan.visible = false;
     const tl = gsap.timeline();
     const ctx = { scene: this.scene, overlay: this.overlay, x: X[i] ?? 0, tl };
-    const make = { collect: assemblyView, run: runView }[stage.id as string] ?? boxesView;
+    const make = { collect: assemblyView, run: runView, score: scoreView }[stage.id as string] ?? boxesView;
     this.view = make(stage, ctx);
     tl.to(this.cam, { ...this.view.cam, yaw: 0, duration: 1.1, ease: "power3.inOut", onUpdate: this.placeCamera }, 0)
       .to(m.group.scale, { x: 0.01, y: 0.01, z: 0.01, duration: 0.45, ease: "back.in(2)" }, 0.1)
