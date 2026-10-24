@@ -23,3 +23,24 @@
 .bubble.left::after { top: calc(var(--ay) - 8px); right: -9px; box-shadow: 2px -2px 0 0 var(--ink); }
 .bubble b { font: 400 15px var(--font-display); display: block; }
 .bubble .meta { font: 500 10.5px var(--font-mono); color: var(--ink-dim); margin-bottom: 5px; }
+
+/* live readouts on the RUN and SCORE lines: real values (examples data) */
+.tag.note { font: 600 11px var(--font-mono); text-transform: none; letter-spacing: 0; background: var(--paper); padding: 3px 8px; border-radius: 8px; box-shadow: 0 0 0 1.5px var(--ink); transition: opacity 0.25s; }
+.tag.note.below { transform: translate(-50%, 8px); }
+.tag.note b { color: var(--terra); font-weight: 700; }
+.tag.note .ok { color: var(--teal); font-weight: 700; }
+.tag.note .bad { color: var(--terra); font-weight: 700; }
+.tag.note.off, .tag.rowl.off { opacity: 0; }
+.tag.note.board { background: var(--ink); color: var(--paper); box-shadow: none; line-height: 1.5; }
+.tag.note.board b { color: var(--mustard); }
+.tag.rowl { font: 600 9.5px var(--font-mono); text-transform: none; letter-spacing: 0; color: var(--ink-dim); transform: translate(4px, -50%); transition: opacity 0.25s; }
+.tag.mini { font: 600 9.5px var(--font-mono); text-transform: none; letter-spacing: 0; color: var(--ink); background: var(--paper); padding: 1px 5px; border-radius: 5px; box-shadow: 0 0 0 1px var(--line); }
+.tag.brow { font: 600 11px var(--font-mono); text-transform: none; letter-spacing: 0; color: var(--paper); transform: translate(0, -50%); transition: opacity 0.25s; }
+.tag.brow b { color: var(--mustard); }
+.tag.brow.off { opacity: 0; }
+
+/* the caption bar under an opened line (viz decision 23) */
+.caption { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 4; pointer-events: none; max-width: 86%;
+  background: var(--paper); box-shadow: 0 0 0 2px var(--ink), 0 8px 20px rgba(60, 40, 20, 0.14); border-radius: 10px; padding: 7px 14px;
+  font: 500 13px/1.45 var(--font-body); color: var(--ink); text-align: center; }
+.caption b { font-weight: 800; color: var(--terra); }

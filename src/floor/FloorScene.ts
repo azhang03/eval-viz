@@ -9,6 +9,7 @@ import type { Part, Stage } from "../../content/stages";
 import { COLOR, disposeTree, ghostBox, mat, rbox, rounded } from "./kit";
 import { Overlay, type Tag } from "./overlay";
 import { assemblyView, boxesView, type Cam, type View } from "./views";
+import { runView } from "./runView";
 
 export type FloorHandlers = {
   openStage: (id: Stage["id"]) => void;
@@ -25,7 +26,9 @@ const statusText = (s: Stage) => (s.status === "partial" ? "being built" : s.sta
 const filesOf = (p: Part) => (p.use ?? []).map(([f]) => f);
 const shortFile = (f: string) => f.split("/").pop() ?? f;
 
-type Machine = { stage: Stage; i: number; group: THREE.Group; hit: THREE.Mesh; lamp?: THREE.MeshStandardMaterial; load?: THREE.Object3D };
+type Machine = { stage: Stage; i: number; group: THREE.Group; hit: THREE.Mesh; lamp?: THREE.MeshStandardMaterial; load?: THREE.Object3D;
+  /** Roof props: the RUN plug slides in and out of its socket; the SCORE magnifier glints. */
+  plug?: THREE.Object3D; glass?: THREE.MeshStandardMaterial };
 
 export class FloorScene {
   private renderer: THREE.WebGLRenderer;
@@ -166,6 +169,35 @@ export class FloorScene {
           chim.castShadow = true;
           group.add(chim);
         }
+        if (stage.id === "run") {
+          // a wall socket on the roof, and a plug with two prongs and a cord (bright prongs: they
+          // stand in front of the dark roof from the camera)
+          const plate = rbox(0.16, 1.05, 1.05, COLOR.paper, 0.06);
+          plate.position.set(-0.1, 3.48, -0.3);
+          const holes = [-0.2, 0.2].map((z) => { const h = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.3, 0.09), mat(0x1d1a17)); h.position.set(-0.01, 3.5, -0.3 + z); return h; });
+          const plug = new THREE.Group();
+          plug.position.set(0.62, 3.5, -0.3);
+          plug.add(rbox(0.46, 0.58, 0.7, COLOR.mustard, 0.1));
+          [-0.2, 0.2].forEach((z) => { const pr = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.22, 0.08), mat(0xeef0f4, { metalness: 0.2, roughness: 0.3, emissive: 0x6a6c70 })); pr.position.set(-0.43, 0, z); pr.castShadow = true; plug.add(pr); });
+          const down = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.36, 0.1), mat(COLOR.ink)); down.position.set(0.18, -0.45, 0);
+          const along = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.1, 0.1), mat(COLOR.ink)); along.position.set(0.53, -0.6, 0);
+          plug.add(down, along);
+          group.add(plate, ...holes, plug);
+          m.plug = plug;
+        }
+        if (stage.id === "score") {
+          // a magnifier sign on the roof
+          const ring = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.09, 12, 32), mat(COLOR.ink));
+          ring.position.set(0.5, 3.55, -0.4);
+          const glassMat = new THREE.MeshStandardMaterial({ color: 0x9ff5e6, transparent: true, opacity: 0.55, emissive: 0x2fd6c0, emissiveIntensity: 0.25 });
+          const glass = new THREE.Mesh(new THREE.CircleGeometry(0.38, 32), glassMat);
+          glass.position.set(0.5, 3.55, -0.39);
+          const handle = rbox(0.16, 0.6, 0.16, COLOR.mustard, 0.05);
+          handle.position.set(0.85, 3.05, -0.4);
+          handle.rotation.z = 0.7;
+          group.add(ring, glass, handle);
+          m.glass = glassMat;
+        }
       } else {
         const gb = ghostBox(3, 2.3, 2.6);
         gb.position.y = 1.5;
@@ -245,7 +277,7 @@ export class FloorScene {
       c.mesh.scale.setScalar(open ? 0.01 : s);
     }
     this.beltBuilt.children.forEach((r, k) => { if (k > 0) r.rotation.y += dt * 4; });
-    const chimneyX = X[0]! + 0.8;
+    const chimneyX = (X[this.stages.findIndex((s) => s.id === "collect")] ?? X[0]!) + 0.8; // the puffs come out of COLLECT's chimney
     for (const p of this.puffs) {
       p.t = (p.t + dt * 0.35) % 1;
       p.mesh.position.set(chimneyX + p.t * 0.6, 3.9 + p.t * 2.2, -0.6 - p.t * 0.3);
@@ -255,6 +287,8 @@ export class FloorScene {
     this.machines.forEach((m, i) => {
       if (m.lamp) m.lamp.emissiveIntensity = 1.1 + Math.sin(t * 4 + i) * 0.6;
       if (m.load) m.load.position.y = 2.2 + Math.sin(t * 1.3) * 0.25;
+      if (m.plug) m.plug.position.x = 0.5 + Math.max(0, Math.sin(t * 1.6)) * 0.6; // out (prongs show), then back in
+      if (m.glass) m.glass.emissiveIntensity = 0.25 + Math.max(0, Math.sin(t * 2.2)) * 0.5;
     });
     this.view?.tick(dt);
     this.renderer.render(this.scene, this.camera);
@@ -303,7 +337,8 @@ export class FloorScene {
     this.beltPlan.visible = false;
     const tl = gsap.timeline();
     const ctx = { scene: this.scene, overlay: this.overlay, x: X[i] ?? 0, tl };
-    this.view = stage.id === "collect" ? assemblyView(stage, ctx) : boxesView(stage, ctx);
+    const make = { collect: assemblyView, run: runView }[stage.id as string] ?? boxesView;
+    this.view = make(stage, ctx);
     tl.to(this.cam, { ...this.view.cam, yaw: 0, duration: 1.1, ease: "power3.inOut", onUpdate: this.placeCamera }, 0)
       .to(m.group.scale, { x: 0.01, y: 0.01, z: 0.01, duration: 0.45, ease: "back.in(2)" }, 0.1)
       .add(() => { this.beltBuilt.visible = false; }, 0.4)
