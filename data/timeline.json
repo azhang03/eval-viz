@@ -35,7 +35,11 @@
             { "id": "resume", "title": "Resume with the same results", "commit": "22513fc", "date": "2026-10-23", "added": "A stopped run resumes with identical hits: a new worktree for each repo, an unfinished last line is cut, and a stopped build starts again from an empty folder." },
             { "id": "B4", "title": "Update vs. rebuild check", "commit": "5c3af80", "date": "2026-10-23", "added": "compare.py and cmeval compare: two runs of the same tasks, one with index updates and one with full rebuilds, must give the same results (Decision 5)." },
             { "id": "review", "title": "Review fixes", "commit": "d5c2013", "date": "2026-10-23", "added": "Run path fixes from the code review: a lock on the run folder, marker files for stopped builds and updates, and a resume refused if the code or an index key changed." },
-            { "id": "B3", "title": "Report and first numbers", "commit": "5a92706", "date": "2026-10-23", "added": "metrics/stats.py (bootstrap, Wilcoxon, Holm) and report.py with cmeval report. First full run on swebv-dev50." }
+            { "id": "B3", "title": "Report and first numbers", "commit": "5a92706", "date": "2026-10-23", "added": "metrics/stats.py (bootstrap, Wilcoxon, Holm) and report.py with cmeval report. First full run on swebv-dev50." },
+            { "id": "grep-fn-plus", "title": "A stronger grep baseline", "commit": "93f7db1", "date": "2026-10-23", "added": "grep-fn options: Python files only, IDF weights, clean keywords, tests last. All four are grep-fn-plus, the baseline of the primary tests." },
+            { "id": "merge", "title": "Merge runs", "commit": "12d306c", "date": "2026-10-23", "added": "cmeval merge adds the systems of one run to another run of the same tasks, so one report can show them together." },
+            { "id": "review2", "title": "Second review fixes", "commit": "c6b2933", "date": "2026-10-23", "added": "The primary systems are an explicit list, so the Holm family stays 6. Fixes in scoring, report, merge, and grep-fn. grep-fn-plus in the grep config." },
+            { "id": "results", "title": "First dev results", "commit": "f70e851", "date": "2026-10-23", "added": "eval/results/: the metrics of the final dev run and the update vs. rebuild check. F3 merged into main (PR #4)." }
           ]
         },
         {

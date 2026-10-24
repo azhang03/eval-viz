@@ -1,6 +1,6 @@
 // The pipeline map: stages, their steps, and the code that does each step.
 // It links the 3D floor (page 1) to the explorer. Kept by hand; /vizup proposes changes.
-// The stage status follows the newest manifest (here 5a92706).
+// The stage status follows the newest manifest (here f70e851).
 
 import type { DefId, RepoPath } from "../src/data/types";
 
@@ -63,12 +63,14 @@ export const STAGES: Stage[] = [
         d: "Reads system configs (TOML) and builds each system from its adapter." },
       { n: "grep", c: 0x5b6fb5, use: [[SRC + "adapters/grep.py", ["cmeval.adapters.grep.GrepRetriever", "cmeval.adapters.grep.rg_count", "cmeval.adapters.grep.rank_files"]], [SRC + "adapters/keywords.py", ["cmeval.adapters.keywords.extract_keywords"]]],
         d: "The offline grep baseline (Decision 4): ripgrep over keywords from the issue, files ranked by match count." },
-      { n: "grep-fn", c: 0xd4673f, use: [[SRC + "adapters/grep_fn.py", ["cmeval.adapters.grep_fn.GrepFnRetriever"]]],
-        d: "grep plus the step an agent takes next: it returns the functions around the matching lines (Decision 4)." },
+      { n: "grep-fn", c: 0xd4673f, use: [[SRC + "adapters/grep_fn.py", ["cmeval.adapters.grep_fn.GrepFnRetriever"]], [SRC + "adapters/grep.py", ["cmeval.adapters.grep.rg_files"]]],
+        d: "grep plus the step an agent takes next: it returns the functions around the matching lines (Decision 4). grep-fn-plus turns on four options (Python files only, IDF weights, clean keywords, tests last) and is the baseline of the report." },
       { n: "codemem", c: 0x6c5a49, use: [[SRC + "adapters/codemem.py", ["cmeval.adapters.codemem.CodememRetriever"]]],
         d: "The only file in cmeval that imports codemem. It plugs codemem in through the same interface." },
       { n: "Runner", c: 0x2f8f8a, use: [[SRC + "run.py", ["cmeval.run.run", "cmeval.run.order_tasks"]], [SRC + "files.py", ["cmeval.files.FileLock", "cmeval.files.drop_unfinished_line"]], [SRC + "repos.py", ["cmeval.repos.discard_live"]], [SRC + "cli.py", ["cmeval.cli.cmd_run"]]],
         d: "Runs every system on every task. For each repo, tasks go in base-commit date order, so one index moves forward with updates (Decision 5). A stopped run resumes with the same results." },
+      { n: "Merge runs", c: 0xe9b440, use: [[SRC + "merge.py", ["cmeval.merge.merge"]], [SRC + "cli.py", ["cmeval.cli.cmd_merge"]]],
+        d: "<code>cmeval merge</code> adds a system that ran on its own (for example grep-fn-plus) to an earlier run of the same tasks, so one report compares them all." },
     ] },
   { id: "score", name: "Score", feat: "F3", status: "built", out: "metrics tables", color: 0x5b6fb5,
     text: "Reads saved run files and grades hits against gold at file, class, and function level.",
@@ -85,7 +87,7 @@ export const STAGES: Stage[] = [
         d: "Reads a saved run and writes the metrics next to its files." },
     ] },
   { id: "report", name: "Report", feat: "F3", status: "built", out: "report.md", color: 0xe9b440,
-    text: "Checks that index updates are valid, then turns the scores into tables with intervals and paired tests against the grep-fn baseline.",
+    text: "Checks that index updates are valid, then turns the scores into tables with intervals and paired tests against the baseline, grep-fn-plus.",
     parts: [
       { n: "Update vs. rebuild", c: 0x2f8f8a, use: [[SRC + "compare.py", ["cmeval.compare.compare", "cmeval.compare.in_code"]], [SRC + "cli.py", ["cmeval.cli.cmd_compare"]]],
         d: "Decision 5: a run with index updates and a run with full rebuilds must find the same code. Required before any results are reported." },
