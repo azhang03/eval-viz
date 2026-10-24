@@ -7,7 +7,7 @@ The site has two pages:
 - **System.** A 3D model of the eval pipeline (collect, run, score, report) above a file explorer. Click a stage to see its steps and the code that does each step. Some steps have a "look closer" view that animates a design decision.
 - **Codebase.** The eval code as a graph, with a timeline of how it grew batch by batch.
 
-The site is live at **https://azhang03.github.io/eval-viz/**. The whole team agreed to publish it.
+The site is live at **https://azhang03.github.io/eval-viz/**.
 
 ## Run it
 
