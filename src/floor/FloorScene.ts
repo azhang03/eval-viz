@@ -6,7 +6,7 @@ import * as THREE from "three";
 import { esc } from "../lib/esc";
 import { gsap } from "gsap";
 import type { Part, Stage } from "../../content/stages";
-import { COLOR, disposeTree, ghostBox, mat, rbox, rounded } from "./kit";
+import { COLOR, disposeTree, ghostBox, mat, rbox, rollerRow, rounded, spinRollers } from "./kit";
 import { Overlay, type Tag } from "./overlay";
 import { assemblyView, boxesView, type Cam, type View } from "./views";
 import { runView } from "./runView";
@@ -33,6 +33,7 @@ type Machine = { stage: Stage; i: number; group: THREE.Group; hit: THREE.Mesh; l
 
 export class FloorScene {
   private renderer: THREE.WebGLRenderer;
+  private rollers: THREE.InstancedMesh | null = null;
   private scene = new THREE.Scene();
   private camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
   private camDir = new THREE.Vector3(0.42, 0.78, 1).normalize();
@@ -114,12 +115,8 @@ export class FloorScene {
     const belt = rbox(x1 - x0, 0.35, 1.3, COLOR.belt, 0.08);
     belt.position.set((x0 + x1) / 2, 0.18, 0);
     this.beltBuilt.add(belt);
-    for (let x = x0 + 0.4; x <= x1 - 0.3; x += 0.5) {
-      const r = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 1.34, 10), mat(COLOR.steel, { metalness: 0.4, roughness: 0.4 }));
-      r.rotation.x = Math.PI / 2;
-      r.position.set(x, 0.38, 0);
-      this.beltBuilt.add(r);
-    }
+    this.rollers = rollerRow(x0 + 0.4, x1 - 0.3, 0, 0.38, 1.34, 0.09);
+    this.beltBuilt.add(this.rollers);
     this.scene.add(this.beltBuilt);
     const planEnd = 10.2;
     const plan = ghostBox(planEnd - x1, 0.35, 1.3);
@@ -266,8 +263,21 @@ export class FloorScene {
     this.overlay.placeTags();
   };
 
+  /**
+   * While a look-closer view covers the floor, the floor stops drawing: it is under a blur and
+   * cannot be read, and each new frame would make the browser blur it again. The animations keep
+   * their time, so the floor goes on from the right place when the view closes.
+   */
+  setCovered(covered: boolean): void {
+    if (this.covered === covered) return;
+    this.covered = covered;
+    if (!covered) { this.renderer.render(this.scene, this.camera); this.overlay.placeTags(); }
+  }
+  private covered = false;
+
   private tick = () => {
     if (!this.alive) return;
+    if (this.covered) { this.timer.update(); this.raf = requestAnimationFrame(this.tick); return; }
     this.timer.update();
     const dt = this.timer.getDelta(), t = this.timer.getElapsed();
     const open = this.shown.opened !== null || this.busy;
@@ -277,7 +287,7 @@ export class FloorScene {
       c.mesh.position.set(c.x0 + c.t * (c.x1 - c.x0), 0.62, 0);
       c.mesh.scale.setScalar(open ? 0.01 : s);
     }
-    this.beltBuilt.children.forEach((r, k) => { if (k > 0) r.rotation.y += dt * 4; });
+    if (this.rollers) spinRollers(this.rollers, dt);
     const chimneyX = (X[this.stages.findIndex((s) => s.id === "collect")] ?? X[0]!) + 0.8; // the puffs come out of COLLECT's chimney
     for (const p of this.puffs) {
       p.t = (p.t + dt * 0.35) % 1;

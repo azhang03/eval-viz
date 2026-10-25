@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { esc } from "../lib/esc";
 import { gsap } from "gsap";
 import type { Part, Stage } from "../../content/stages";
-import { COLOR, disposeTree, ghostBox, mat, rbox } from "./kit";
+import { COLOR, disposeTree, ghostBox, mat, rbox, rollerRow, spinRollers } from "./kit";
 import type { Overlay, Tag } from "./overlay";
 
 export type Cam = { zoom: number; tx: number; ty: number; tz: number };
@@ -82,14 +82,8 @@ export function assemblyView(stage: Stage, ctx: ViewCtx): View {
   const belt = rbox(15.4, 0.35, 1.3, COLOR.belt, 0.08);
   belt.position.y = 0.18;
   root.add(belt);
-  const rolls = new THREE.Group();
+  const rolls = rollerRow(-7.4, 7.41, 0, 0.38, 1.34, 0.09);
   root.add(rolls);
-  for (let x = -7.4; x <= 7.41; x += 0.5) {
-    const r = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 1.34, 10), mat(COLOR.steel, { metalness: 0.4, roughness: 0.4 }));
-    r.rotation.x = Math.PI / 2;
-    r.position.set(x, 0.38, 0);
-    rolls.add(r);
-  }
   const ringMat = new THREE.MeshBasicMaterial({ color: COLOR.mustard, transparent: true, opacity: 0 });
   const ring = new THREE.Mesh(new THREE.RingGeometry(1.5, 1.7, 56), ringMat);
   ring.rotation.x = -Math.PI / 2;
@@ -412,6 +406,6 @@ export function assemblyView(stage: Stage, ctx: ViewCtx): View {
       ctx.scene.remove(root);
       disposeTree(root);
     },
-    tick(dt) { rolls.children.forEach((r) => (r.rotation.y += dt * 4)); },
+    tick(dt) { spinRollers(rolls, dt); },
   };
 }
