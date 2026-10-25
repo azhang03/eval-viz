@@ -7,6 +7,8 @@ import { gsap } from "gsap";
 import type { Stage } from "../../content/stages";
 import { fixtureB5 as EX } from "../data/load";
 import { esc } from "../lib/esc";
+import { hitsInBudget, runningTotals } from "../lib/budget";
+import { nv3 as f3, nvNum as nf } from "../closers/nv";
 import { reducedMotion } from "../lib/pace";
 import { COLOR, disposeTree, mat, rbox } from "./kit";
 import { Caption, arc, hideNote, mini, note, rollers, setNote } from "./lines";
@@ -15,8 +17,6 @@ import { stepTag, type View, type ViewCtx } from "./views";
 
 const SYSN = "grep-fn-plus";
 const MATCH = COLOR.mustard, MISS = 0xb9b2a6, OFF = 0x6c6f78;
-const f3 = (v: number | null | undefined) => (v === null || v === undefined ? "-" : (Math.round(v * 1000) / 1000).toString());
-const nf = (v: number) => v.toLocaleString("en-US");
 
 export function scoreView(stage: Stage, ctx: ViewCtx): View {
   const parts = stage.parts ?? [];
@@ -108,14 +108,13 @@ export function scoreView(stage: Stage, ctx: ViewCtx): View {
   const say = C.say.bind(C), hold = C.hold.bind(C);
 
   // running totals for the meter (the data tests check that the real recall@budget values agree)
-  const cum: number[] = [];
-  G.tokens.reduce((a, b, k) => (cum[k] = a + b), 0);
-  const fit = (b: number) => { const k = cum.findIndex((c) => c > b); return k === -1 ? cum.length : k; }; // whole hits only
+  const cum = runningTotals(G.tokens);
+  const fit = (b: number) => hitsInBudget(cum, b); // whole hits only
   const first = FN.first; // rank of the first hit that finds the gold function (null: not found)
   const nMetrics = Object.keys(FN.metrics).length; // metrics for each (level, IoU) pair, as score.py writes them
   const nSets = 1 + 2 * 3; // file level, plus class and function level at 3 IoU thresholds each
 
-  function clearSegs() { segs.splice(0).forEach((m) => { meterS.remove(m); m.geometry.dispose(); }); }
+  function clearSegs() { segs.splice(0).forEach((m) => { meterS.remove(m); m.geometry.dispose(); (m.material as THREE.Material).dispose(); }); }
   function prepare(k: number) {
     tray.visible = true; tray.position.set(sx(k), TY, 0); tray.scale.setScalar(1);
     cards.forEach((c, j) => { c.position.y = 0.26; paint(j, k >= 1); });

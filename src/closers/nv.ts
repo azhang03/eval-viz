@@ -26,7 +26,3 @@ export function nvLayer(root: HTMLElement, name: string): void {
 export const nvShort = (p: string) => p.split("/").pop() ?? p;
 export const nvNum = (v: number) => v.toLocaleString("en-US");
 export const nv3 = (v: number | null | undefined) => (v === null || v === undefined ? "-" : (Math.round(v * 1000) / 1000).toString());
-/** A path in a test folder or a test file. */
-export const isTestPath = (p: string) => /(^|\/)tests?\//.test(p) || /(^|\/)test_[^/]*\.py$/.test(p);
-/** A file that is not code: an image, a style sheet, or docs. */
-export const isNotCode = (p: string) => /\.(svg|css|png|jpe?g|gif|rst|md|txt|html?)$/.test(p);

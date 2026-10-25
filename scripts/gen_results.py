@@ -53,7 +53,7 @@ def outer(args) -> int:
         (run_dir / "report.md").rename(run_dir / "report.committed.md")
         subprocess.run(["uv", "run", "--frozen", "--quiet", "--project", str(snap / "eval"), "python", "-I",
                         str(Path(__file__).resolve()), "--inner", "--snap", str(snap), "--run-dir", str(run_dir),
-                        "--rev", rev, "--out", str(OUT)], check=True)
+                        "--rev", rev], check=True)
     return 0
 
 
@@ -163,7 +163,6 @@ def main(argv=None) -> int:
     ap.add_argument("--inner", action="store_true", help=argparse.SUPPRESS)
     ap.add_argument("--snap", help=argparse.SUPPRESS)
     ap.add_argument("--run-dir", help=argparse.SUPPRESS)
-    ap.add_argument("--out", help=argparse.SUPPRESS)
     args = ap.parse_args(argv)
     return inner(args) if args.inner else outer(args)
 

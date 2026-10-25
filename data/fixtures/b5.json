@@ -2416,6 +2416,18 @@
  ],
  "gold_file_outside": 75,
  "grep": {
+  "file_kinds": {
+   "doc/images/iris.svg": "other",
+   "doc/themes/scikit-learn/static/css/bootstrap.css": "other",
+   "doc/themes/scikit-learn/static/css/bootstrap.min.css": "other",
+   "sklearn/feature_extraction/tests/test_text.py": "test",
+   "sklearn/feature_extraction/text.py": "code",
+   "sklearn/gaussian_process/kernels.py": "code",
+   "sklearn/pipeline.py": "code",
+   "sklearn/preprocessing/data.py": "code",
+   "sklearn/preprocessing/tests/test_data.py": "test",
+   "sklearn/utils/estimator_checks.py": "code"
+  },
   "files": [
    [
     "sklearn/preprocessing/tests/test_data.py",
@@ -2706,6 +2718,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "test",
     "matches": 398,
     "path": "sklearn/preprocessing/tests/test_data.py",
     "score": 398.0,
@@ -2717,6 +2730,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "code",
     "matches": 390,
     "path": "sklearn/preprocessing/data.py",
     "score": 390.0,
@@ -2728,6 +2742,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "code",
     "matches": 282,
     "path": "sklearn/pipeline.py",
     "score": 282.0,
@@ -2739,6 +2754,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "test",
     "matches": 276,
     "path": "sklearn/feature_extraction/tests/test_text.py",
     "score": 276.0,
@@ -2750,6 +2766,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "code",
     "matches": 276,
     "path": "sklearn/gaussian_process/kernels.py",
     "score": 276.0,
@@ -2761,6 +2778,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "code",
     "matches": 248,
     "path": "sklearn/feature_extraction/text.py",
     "score": 248.0,
@@ -2772,6 +2790,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "other",
     "matches": 235,
     "path": "doc/images/iris.svg",
     "score": 235.0,
@@ -2783,6 +2802,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "code",
     "matches": 231,
     "path": "sklearn/utils/estimator_checks.py",
     "score": 231.0,
@@ -2794,6 +2814,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "other",
     "matches": 206,
     "path": "doc/themes/scikit-learn/static/css/bootstrap.css",
     "score": 206.0,
@@ -2805,6 +2826,7 @@
    {
     "cached": true,
     "end": null,
+    "kind": "other",
     "matches": 201,
     "path": "doc/themes/scikit-learn/static/css/bootstrap.min.css",
     "score": 201.0,
@@ -5166,6 +5188,7 @@
     {
      "cached": true,
      "end": 487,
+     "kind": "test",
      "matches": 52,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 52.0,
@@ -5177,6 +5200,7 @@
     {
      "cached": true,
      "end": 910,
+     "kind": "code",
      "matches": 40,
      "path": "sklearn/utils/estimator_checks.py",
      "score": 40.0,
@@ -5188,6 +5212,7 @@
     {
      "cached": true,
      "end": 968,
+     "kind": "test",
      "matches": 32,
      "path": "sklearn/preprocessing/tests/test_data.py",
      "score": 32.0,
@@ -5199,6 +5224,7 @@
     {
      "cached": true,
      "end": 2868,
+     "kind": "code",
      "matches": 32,
      "path": "sklearn/preprocessing/data.py",
      "score": 32.0,
@@ -5210,6 +5236,7 @@
     {
      "cached": true,
      "end": 1201,
+     "kind": "test",
      "matches": 31,
      "path": "sklearn/preprocessing/tests/test_data.py",
      "score": 31.0,
@@ -5221,6 +5248,7 @@
     {
      "cached": true,
      "end": 2602,
+     "kind": "code",
      "matches": 31,
      "path": "sklearn/preprocessing/data.py",
      "score": 31.0,
@@ -5232,6 +5260,7 @@
     {
      "cached": true,
      "end": 299,
+     "kind": "code",
      "matches": 27,
      "path": "sklearn/feature_extraction/text.py",
      "score": 27.0,
@@ -5243,6 +5272,7 @@
     {
      "cached": true,
      "end": 767,
+     "kind": "test",
      "matches": 26,
      "path": "sklearn/tests/test_pipeline.py",
      "score": 26.0,
@@ -5254,6 +5284,7 @@
     {
      "cached": true,
      "end": 771,
+     "kind": "code",
      "matches": 25,
      "path": "sklearn/externals/funcsigs.py",
      "score": 25.0,
@@ -5265,6 +5296,7 @@
     {
      "cached": true,
      "end": 470,
+     "kind": "test",
      "matches": 24,
      "path": "sklearn/tests/test_pipeline.py",
      "score": 24.0,
@@ -5354,6 +5386,7 @@
     {
      "cached": true,
      "end": 487,
+     "kind": "test",
      "matches": 52,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 52.0,
@@ -5365,6 +5398,7 @@
     {
      "cached": true,
      "end": 910,
+     "kind": "code",
      "matches": 40,
      "path": "sklearn/utils/estimator_checks.py",
      "score": 40.0,
@@ -5376,6 +5410,7 @@
     {
      "cached": true,
      "end": 968,
+     "kind": "test",
      "matches": 32,
      "path": "sklearn/preprocessing/tests/test_data.py",
      "score": 32.0,
@@ -5387,6 +5422,7 @@
     {
      "cached": true,
      "end": 2868,
+     "kind": "code",
      "matches": 32,
      "path": "sklearn/preprocessing/data.py",
      "score": 32.0,
@@ -5398,6 +5434,7 @@
     {
      "cached": true,
      "end": 1201,
+     "kind": "test",
      "matches": 31,
      "path": "sklearn/preprocessing/tests/test_data.py",
      "score": 31.0,
@@ -5409,6 +5446,7 @@
     {
      "cached": true,
      "end": 2602,
+     "kind": "code",
      "matches": 31,
      "path": "sklearn/preprocessing/data.py",
      "score": 31.0,
@@ -5420,6 +5458,7 @@
     {
      "cached": true,
      "end": 299,
+     "kind": "code",
      "matches": 27,
      "path": "sklearn/feature_extraction/text.py",
      "score": 27.0,
@@ -5431,6 +5470,7 @@
     {
      "cached": true,
      "end": 767,
+     "kind": "test",
      "matches": 26,
      "path": "sklearn/tests/test_pipeline.py",
      "score": 26.0,
@@ -5442,6 +5482,7 @@
     {
      "cached": true,
      "end": 771,
+     "kind": "code",
      "matches": 25,
      "path": "sklearn/externals/funcsigs.py",
      "score": 25.0,
@@ -5453,6 +5494,7 @@
     {
      "cached": true,
      "end": 470,
+     "kind": "test",
      "matches": 24,
      "path": "sklearn/tests/test_pipeline.py",
      "score": 24.0,
@@ -5543,6 +5585,7 @@
     {
      "cached": true,
      "end": 962,
+     "kind": "code",
      "matches": 14,
      "path": "sklearn/feature_extraction/text.py",
      "score": 30.859893,
@@ -5554,6 +5597,7 @@
     {
      "cached": true,
      "end": 386,
+     "kind": "code",
      "matches": 12,
      "path": "sklearn/datasets/twenty_newsgroups.py",
      "score": 26.54514,
@@ -5565,6 +5609,7 @@
     {
      "cached": true,
      "end": 930,
+     "kind": "code",
      "matches": 19,
      "path": "sklearn/feature_extraction/text.py",
      "score": 25.044364,
@@ -5576,6 +5621,7 @@
     {
      "cached": false,
      "end": 559,
+     "kind": "test",
      "matches": 9,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 23.494144,
@@ -5587,6 +5633,7 @@
     {
      "cached": true,
      "end": 487,
+     "kind": "test",
      "matches": 52,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 21.321017,
@@ -5598,6 +5645,7 @@
     {
      "cached": true,
      "end": 365,
+     "kind": "code",
      "matches": 6,
      "path": "sklearn/feature_extraction/dict_vectorizer.py",
      "score": 20.192153,
@@ -5609,6 +5657,7 @@
     {
      "cached": false,
      "end": 259,
+     "kind": "test",
      "matches": 9,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 18.592171,
@@ -5620,6 +5669,7 @@
     {
      "cached": false,
      "end": 270,
+     "kind": "test",
      "matches": 9,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 18.592171,
@@ -5631,6 +5681,7 @@
     {
      "cached": true,
      "end": 299,
+     "kind": "code",
      "matches": 27,
      "path": "sklearn/feature_extraction/text.py",
      "score": 18.241063,
@@ -5642,6 +5693,7 @@
     {
      "cached": true,
      "end": 626,
+     "kind": "test",
      "matches": 13,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 16.449304,
@@ -5754,6 +5806,7 @@
     {
      "cached": true,
      "end": 962,
+     "kind": "code",
      "matches": 14,
      "path": "sklearn/feature_extraction/text.py",
      "score": 30.859893,
@@ -5765,6 +5818,7 @@
     {
      "cached": true,
      "end": 386,
+     "kind": "code",
      "matches": 12,
      "path": "sklearn/datasets/twenty_newsgroups.py",
      "score": 26.54514,
@@ -5776,6 +5830,7 @@
     {
      "cached": true,
      "end": 930,
+     "kind": "code",
      "matches": 19,
      "path": "sklearn/feature_extraction/text.py",
      "score": 25.044364,
@@ -5787,6 +5842,7 @@
     {
      "cached": false,
      "end": 559,
+     "kind": "test",
      "matches": 9,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 23.494144,
@@ -5798,6 +5854,7 @@
     {
      "cached": true,
      "end": 487,
+     "kind": "test",
      "matches": 52,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 21.321017,
@@ -5809,6 +5866,7 @@
     {
      "cached": true,
      "end": 365,
+     "kind": "code",
      "matches": 6,
      "path": "sklearn/feature_extraction/dict_vectorizer.py",
      "score": 20.192153,
@@ -5820,6 +5878,7 @@
     {
      "cached": false,
      "end": 259,
+     "kind": "test",
      "matches": 9,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 18.592171,
@@ -5831,6 +5890,7 @@
     {
      "cached": false,
      "end": 270,
+     "kind": "test",
      "matches": 9,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 18.592171,
@@ -5842,6 +5902,7 @@
     {
      "cached": true,
      "end": 299,
+     "kind": "code",
      "matches": 27,
      "path": "sklearn/feature_extraction/text.py",
      "score": 18.241063,
@@ -5853,6 +5914,7 @@
     {
      "cached": true,
      "end": 626,
+     "kind": "test",
      "matches": 13,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 16.449304,
@@ -5966,6 +6028,7 @@
     {
      "cached": true,
      "end": 962,
+     "kind": "code",
      "matches": 14,
      "path": "sklearn/feature_extraction/text.py",
      "score": 30.859893,
@@ -5977,6 +6040,7 @@
     {
      "cached": true,
      "end": 386,
+     "kind": "code",
      "matches": 12,
      "path": "sklearn/datasets/twenty_newsgroups.py",
      "score": 26.54514,
@@ -5988,6 +6052,7 @@
     {
      "cached": true,
      "end": 930,
+     "kind": "code",
      "matches": 19,
      "path": "sklearn/feature_extraction/text.py",
      "score": 25.044364,
@@ -5999,6 +6064,7 @@
     {
      "cached": true,
      "end": 365,
+     "kind": "code",
      "matches": 6,
      "path": "sklearn/feature_extraction/dict_vectorizer.py",
      "score": 20.192153,
@@ -6010,6 +6076,7 @@
     {
      "cached": true,
      "end": 299,
+     "kind": "code",
      "matches": 27,
      "path": "sklearn/feature_extraction/text.py",
      "score": 18.241063,
@@ -6021,6 +6088,7 @@
     {
      "cached": true,
      "end": 999,
+     "kind": "code",
      "matches": 4,
      "path": "sklearn/feature_extraction/text.py",
      "score": 16.295153,
@@ -6032,6 +6100,7 @@
     {
      "cached": true,
      "end": 857,
+     "kind": "code",
      "matches": 17,
      "path": "sklearn/feature_extraction/text.py",
      "score": 15.715335,
@@ -6043,6 +6112,7 @@
     {
      "cached": true,
      "end": 276,
+     "kind": "code",
      "matches": 11,
      "path": "sklearn/manifold/mds.py",
      "score": 15.646549,
@@ -6054,6 +6124,7 @@
     {
      "cached": true,
      "end": 992,
+     "kind": "code",
      "matches": 9,
      "path": "sklearn/feature_extraction/text.py",
      "score": 15.29018,
@@ -6065,6 +6136,7 @@
     {
      "cached": true,
      "end": 310,
+     "kind": "code",
      "matches": 7,
      "path": "sklearn/feature_extraction/dict_vectorizer.py",
      "score": 15.29018,
@@ -6298,7 +6370,7 @@
      false
     ],
     "file": {
-     "first": 7,
+     "first": 5,
      "metrics": {
       "found": 1.0,
       "mrr": 0.2,
@@ -6598,6 +6670,7 @@
     {
      "cached": true,
      "end": 487,
+     "kind": "test",
      "matches": 52,
      "path": "sklearn/feature_extraction/tests/test_text.py",
      "score": 52.0,
@@ -6609,6 +6682,7 @@
     {
      "cached": true,
      "end": 910,
+     "kind": "code",
      "matches": 40,
      "path": "sklearn/utils/estimator_checks.py",
      "score": 40.0,
@@ -6620,6 +6694,7 @@
     {
      "cached": true,
      "end": 968,
+     "kind": "test",
      "matches": 32,
      "path": "sklearn/preprocessing/tests/test_data.py",
      "score": 32.0,
@@ -6631,6 +6706,7 @@
     {
      "cached": true,
      "end": 2868,
+     "kind": "code",
      "matches": 32,
      "path": "sklearn/preprocessing/data.py",
      "score": 32.0,
@@ -6642,6 +6718,7 @@
     {
      "cached": true,
      "end": 1201,
+     "kind": "test",
      "matches": 31,
      "path": "sklearn/preprocessing/tests/test_data.py",
      "score": 31.0,
@@ -6653,6 +6730,7 @@
     {
      "cached": true,
      "end": 2602,
+     "kind": "code",
      "matches": 31,
      "path": "sklearn/preprocessing/data.py",
      "score": 31.0,
@@ -6664,6 +6742,7 @@
     {
      "cached": true,
      "end": 299,
+     "kind": "code",
      "matches": 27,
      "path": "sklearn/feature_extraction/text.py",
      "score": 27.0,
@@ -6675,6 +6754,7 @@
     {
      "cached": true,
      "end": 767,
+     "kind": "test",
      "matches": 26,
      "path": "sklearn/tests/test_pipeline.py",
      "score": 26.0,
@@ -6686,6 +6766,7 @@
     {
      "cached": true,
      "end": 771,
+     "kind": "code",
      "matches": 25,
      "path": "sklearn/externals/funcsigs.py",
      "score": 25.0,
@@ -6697,6 +6778,7 @@
     {
      "cached": true,
      "end": 470,
+     "kind": "test",
      "matches": 24,
      "path": "sklearn/tests/test_pipeline.py",
      "score": 24.0,
@@ -7254,6 +7336,7 @@
     {
      "cached": true,
      "end": 962,
+     "kind": "code",
      "matches": 14,
      "path": "sklearn/feature_extraction/text.py",
      "score": 30.859893,
@@ -7265,6 +7348,7 @@
     {
      "cached": true,
      "end": 386,
+     "kind": "code",
      "matches": 12,
      "path": "sklearn/datasets/twenty_newsgroups.py",
      "score": 26.54514,
@@ -7276,6 +7360,7 @@
     {
      "cached": true,
      "end": 930,
+     "kind": "code",
      "matches": 19,
      "path": "sklearn/feature_extraction/text.py",
      "score": 25.044364,
@@ -7287,6 +7372,7 @@
     {
      "cached": true,
      "end": 365,
+     "kind": "code",
      "matches": 6,
      "path": "sklearn/feature_extraction/dict_vectorizer.py",
      "score": 20.192153,
@@ -7298,6 +7384,7 @@
     {
      "cached": true,
      "end": 299,
+     "kind": "code",
      "matches": 27,
      "path": "sklearn/feature_extraction/text.py",
      "score": 18.241063,
@@ -7309,6 +7396,7 @@
     {
      "cached": true,
      "end": 999,
+     "kind": "code",
      "matches": 4,
      "path": "sklearn/feature_extraction/text.py",
      "score": 16.295153,
@@ -7320,6 +7408,7 @@
     {
      "cached": true,
      "end": 857,
+     "kind": "code",
      "matches": 17,
      "path": "sklearn/feature_extraction/text.py",
      "score": 15.715335,
@@ -7331,6 +7420,7 @@
     {
      "cached": true,
      "end": 276,
+     "kind": "code",
      "matches": 11,
      "path": "sklearn/manifold/mds.py",
      "score": 15.646549,
@@ -7342,6 +7432,7 @@
     {
      "cached": true,
      "end": 992,
+     "kind": "code",
      "matches": 9,
      "path": "sklearn/feature_extraction/text.py",
      "score": 15.29018,
@@ -7353,6 +7444,7 @@
     {
      "cached": true,
      "end": 310,
+     "kind": "code",
      "matches": 7,
      "path": "sklearn/feature_extraction/dict_vectorizer.py",
      "score": 15.29018,

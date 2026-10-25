@@ -98,6 +98,8 @@ export type LevelGrade = { first: number | null; metrics: Metrics; relevance: nu
 export type B5Hit = {
   path: RepoPath; start: number | null; end: number | null; symbol: string | null; score: number;
   text: string; matches: number | null; sha: string; cached: boolean;
+  /** "code", "test", or "other", by cmeval's own rule (patches.classify_path). */
+  kind: string;
 };
 
 export type B5System = {
@@ -128,7 +130,7 @@ export type FixtureB5 = {
     marks: { start: number; end: number; kind: "backtick" | "identifier" | "word" | "skip" }[];
     stop_words: number; max: number;
   };
-  grep: { files_matched: number; files: [string, number][]; gold_file_rank: number | null; hits: B5Hit[]; grade: B5System["grade"] };
+  grep: { files_matched: number; files: [string, number][]; file_kinds: Record<string, string>; gold_file_rank: number | null; hits: B5Hit[]; grade: B5System["grade"] };
   switches: B5Switch[];
   gold_file_lines: { line: number; text: string; fn: string | null; fn_start: number | null; fn_end: number | null; keywords: string[] }[];
   gold_file_functions: { symbol: string; start: number; end: number; lines: number }[];

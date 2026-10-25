@@ -96,12 +96,14 @@ def outer(args) -> int:
         subprocess.run(["tar", "-x", "-C", str(base)], input=archive, check=True)
         sh("git", "init", "-q", cwd=base)
         sh("uv", "run", "--frozen", "--quiet", "--project", str(snap / "eval"), "python", "-I", str(Path(__file__).resolve()),
-           "--inner", "--snap", str(snap), "--base", str(base), "--cache", str(home / "token-cache" / "claude-opus-5-5.sqlite"),
-           "--rev", args.rev, "--out", str(out_path.resolve()))
-    out = json.loads(out_path.read_text(encoding="utf-8"))
-    check_against_runs(out, home)
+           "--inner", "--snap", str(snap), "--base", str(base), "--home", str(home),
+           "--rev", args.rev, "--out", str(Path(tmp) / "made.json"))
+        out = json.loads((Path(tmp) / "made.json").read_text(encoding="utf-8"))
+    check_against_runs(out, home)  # stops before the fixture is written if the lists differ
     out.pop("_check")  # the full hit texts are only for the check
-    out_path.write_text(json.dumps(out, indent=1, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    tmp_out = out_path.with_suffix(".json.tmp")
+    tmp_out.write_text(json.dumps(out, indent=1, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    tmp_out.replace(out_path)
     return 0
 
 
@@ -198,16 +200,26 @@ def inner(args) -> int:
     ranked = rank_files(counts)
     file_rank = {p: i for i, (p, _) in enumerate(ranked, start=1)}
 
-    # ---- token counts: cache (read-only), else an estimate
-    db = sqlite3.connect(f"file:{args.cache}?mode=ro", uri=True)
+    # ---- token counts: cmeval's own cache file (read-only), else an estimate
+    import os as _os
+    from cmeval.metrics.tokens import DEFAULT_MODEL
+    from cmeval.paths import token_cache_dir
+    _os.environ["CMEVAL_HOME"] = args.home  # token_cache_dir() follows CMEVAL_HOME
+    cache = token_cache_dir() / f"{DEFAULT_MODEL}.sqlite"
+    if not cache.is_file():
+        raise SystemExit(f"no token cache at {cache}: the views need real counts")
+    db = sqlite3.connect(f"file:{cache}?mode=ro", uri=True)
     overhead = int(db.execute("SELECT value FROM meta WHERE key = 'overhead'").fetchone()[0])
     estimate = EstimateCounter()
 
+    counted: dict[str, tuple[int, bool]] = {}
+
     def tokens(text: str) -> tuple[int, bool]:
-        if not text:
-            return 0, False
-        row = db.execute("SELECT tokens FROM counts WHERE sha = ?", (hashlib.sha256(text.encode()).hexdigest(),)).fetchone()
-        return (row[0], False) if row else (estimate.count([text])[0], True)
+        """(count, is an estimate). Each text is looked up once."""
+        if text not in counted:
+            row = db.execute("SELECT tokens FROM counts WHERE sha = ?", (hashlib.sha256(text.encode()).hexdigest(),)).fetchone() if text else (0,)
+            counted[text] = (row[0], False) if row else (estimate.count([text])[0], True)
+        return counted[text]
 
     def grade(hits, granularity: str) -> dict:
         """The real per-task scoring of score.py: file level on file units, other levels on raw hits."""
@@ -221,15 +233,18 @@ def inner(args) -> int:
             units = file_units(hits, relevance) if level == "file" else relevance
             metrics = {**accuracy_metrics(units, len(gold), (1, 5, 10, 20, 50)), **token_metrics(list(hit_tokens), relevance, len(gold))}
             out[level] = {"metrics": metrics, "relevance": [sorted(r) for r in relevance], "units": [sorted(u) for u in units],
-                          "first": next((i for i, r in enumerate(relevance, start=1) if r), None)}
+                          "first": next((i for i, r in enumerate(units, start=1) if r), None)}  # file level: rank in file units
         out["tokens"] = list(hit_tokens)
         out["estimated"] = list(estimated)
         return out
 
+    from cmeval.patches import classify_path
+
     def hit_dict(h) -> dict:
-        # sha: the token-cache key of the hit text; cached: the count came from the cache (not an estimate)
+        # sha: the token-cache key of the hit text; cached: the count came from the cache (not an estimate);
+        # kind: "code", "test", or "other", by cmeval's own rule (patches.classify_path)
         return {"path": h.path, "start": h.start_line, "end": h.end_line, "symbol": h.symbol, "score": round(h.score, 6),
-                "text": h.text, "matches": (h.extra or {}).get("matches"),
+                "text": h.text, "matches": (h.extra or {}).get("matches"), "kind": classify_path(h.path)[0],
                 "sha": hashlib.sha256(h.text.encode()).hexdigest(), "cached": not tokens(h.text)[1]}
 
     def gold_rank(hits) -> int | None:
@@ -307,7 +322,7 @@ def inner(args) -> int:
     run_order = [{"id": t.id, "repo": t.repo, "commit": t.base_commit[:7]} for group in order_tasks(all_tasks).values() for t in group]
 
     # search times for this task, from the real runs (read-only; the views label the source)
-    runs = Path(args.cache).parent.parent / "runs"
+    runs = Path(args.home) / "runs"
     search_ms = {}
     for name in ("grep", "grep-fn", "grep-fn-plus"):
         for run in CHECK_RUNS:  # the final dev run first
@@ -337,6 +352,7 @@ def inner(args) -> int:
                      "dropped_by_cleaning": [kw for kw in spare if NOISE_RE.search(kw)],
                      "stop_words": len(STOP_WORDS), "max": MAX_KEYWORDS},
         "grep": {"files_matched": len(counts), "files": [[p, c] for p, c in ranked[:TOP]], "gold_file_rank": file_rank.get(GOLD_FILE),
+                 "file_kinds": {p: classify_path(p)[0] for p, _ in ranked[:TOP]},
                  "hits": [hit_dict(h) for h in grep_hits[:TOP]], "grade": grade(grep_hits, "file")},
         "switches": steps,
         "gold_file_lines": gold_lines,
@@ -369,7 +385,7 @@ def main(argv=None) -> int:
     ap.add_argument("--inner", action="store_true", help=argparse.SUPPRESS)
     ap.add_argument("--snap", help=argparse.SUPPRESS)
     ap.add_argument("--base", help=argparse.SUPPRESS)
-    ap.add_argument("--cache", help=argparse.SUPPRESS)
+    ap.add_argument("--home", help=argparse.SUPPRESS)
     args = ap.parse_args(argv)
     return inner(args) if args.inner else outer(args)
 

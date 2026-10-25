@@ -3,6 +3,7 @@
 import { gsap } from "gsap";
 import { fixtureB5 as EX } from "../data/load";
 import { esc } from "../lib/esc";
+import { hitsInBudget as fit, runningTotals } from "../lib/budget";
 import { nv3, nvLayer, nvNow, nvNum, nvShell, nvShort } from "./nv";
 import type { CloserStep, CloserView } from "./types";
 
@@ -12,9 +13,7 @@ const MAXT = 8000;
 export function tokensView(): CloserView {
   const SY = EX.systems["grep-fn-plus"], G = SY.grade, FN = G.function, h1 = SY.top[0]!;
   const baseSys = EX.systems["grep-fn"], base = baseSys.grade, OH = EX.token_cache.overhead;
-  const running = (t: number[]) => { const c: number[] = []; t.reduce((a, b, k) => (c[k] = a + b), 0); return c; };
-  const cum = running(G.tokens), bcum = running(base.tokens);
-  const fit = (c: number[], b: number) => { const k = c.findIndex((x) => x > b); return k === -1 ? c.length : k; }; // whole hits only
+  const cum = runningTotals(G.tokens), bcum = runningTotals(base.tokens);
   const first = FN.first, ttf = FN.metrics.tokens_to_first ?? null;
   const cached = SY.top.filter((h) => h.cached).length;
   const found = (b: number) => (FN.metrics[`recall@budget${b}`] ?? 0) > 0;

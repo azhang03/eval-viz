@@ -70,7 +70,7 @@ export const STAGES: Stage[] = [
       { n: "Runner", c: 0x2f8f8a, use: [[SRC + "run.py", ["cmeval.run.run", "cmeval.run.order_tasks"]], [SRC + "files.py", ["cmeval.files.FileLock", "cmeval.files.drop_unfinished_line"]], [SRC + "repos.py", ["cmeval.repos.discard_live"]], [SRC + "cli.py", ["cmeval.cli.cmd_run"]]],
         d: "Runs every system on every task. For each repo, tasks go in commit-date order, so one index moves forward with small updates instead of full rebuilds (Decision 5). A stopped run continues and gives the same results." },
       { n: "Merge runs", c: 0xe9b440, use: [[SRC + "merge.py", ["cmeval.merge.merge"]], [SRC + "cli.py", ["cmeval.cli.cmd_merge"]]],
-        d: "<code>cmeval merge</code> writes a new run with the systems of two runs of the same tasks, so one report compares them all. The two runs do not change. The final dev run joins the 3 grep systems and the 3 codemem systems this way." },
+        d: "<code>cmeval merge</code> writes a new run with the systems of two runs of the same tasks, so one report compares them all. The two runs do not change. Example: the early dev run <code>2026-10-23-dev50-final</code> joins its 3 grep systems and 3 codemem systems this way." },
     ] },
   { id: "score", name: "Score", feat: "F3", status: "built", out: "metrics tables", color: 0x5b6fb5,
     text: "Grades each saved run. For every task it compares each system's ranked list of hits with the answer key (the files, classes, and functions that the real fix changed), and it computes accuracy, reading cost in tokens, and speed.",

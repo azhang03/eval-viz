@@ -24,6 +24,14 @@ describe("b5 examples agree with themselves", () => {
       expect(found).toBe((fn.metrics[`recall@budget${budget}`] ?? 0) > 0);
     }
   });
+  it("at every level, the stored rank of the first right item agrees with its MRR", () => {
+    const lists = [...Object.values(fixtureB5.systems).map((s) => s.grade), fixtureB5.grep.grade];
+    for (const g of lists) for (const lv of ["file", "class", "function"] as const) {
+      const level = g[lv];
+      if (!level) continue;
+      expect(level.metrics.mrr).toBeCloseTo(level.first === null ? 0 : 1 / level.first, 6);
+    }
+  });
   it("tokens to first is the running total at the first right hit", () => {
     for (const s of Object.values(fixtureB5.systems)) {
       const g = s.grade, first = g.function.first;

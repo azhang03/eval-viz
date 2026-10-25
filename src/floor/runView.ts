@@ -8,13 +8,13 @@ import { gsap } from "gsap";
 import type { Stage } from "../../content/stages";
 import { fixtureB5 as EX, resultsFinal } from "../data/load";
 import { esc } from "../lib/esc";
+import { nvShort as short } from "../closers/nv";
 import { reducedMotion } from "../lib/pace";
 import { COLOR, disposeTree, mat, rbox } from "./kit";
 import { ADAPTER_COLOR, Caption, arc, hideNote, hitTray, mini, move, note, rollers, setNote } from "./lines";
 import type { Tag } from "./overlay";
 import { stepTag, type View, type ViewCtx } from "./views";
 
-const short = (p: string) => p.split("/").pop() ?? p;
 const OFF = 0x6c6f78;
 
 export function runView(stage: Stage, ctx: ViewCtx): View {
@@ -105,10 +105,11 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
     lever.rotation.x = 0.6;
     return lever;
   });
-  // 5. codemem: one shared index block and three nozzles (one for each codemem system)
+  // 5. codemem: one shared index block, and one nozzle for each codemem system
+  const CM = SYS.filter((x) => x.adapter === "codemem"), nCM = CM.length;
   { const body = rbox(2.0, 1.3, 1.3, 0x6c5a49, 0.12); body.position.y = 0.65; cB.add(body); }
   const layers = Array.from({ length: 5 }, (_, j) => { const l = rbox(1.4, 0.18, 0.9, COLOR.indigo, 0.03, { transparent: true, opacity: 0.85 }); l.position.set(0, 1.4 + j * 0.2, -0.05); l.scale.setScalar(0.01); cB.add(l); return l; });
-  const nozzles = [-0.5, 0, 0.5].map((x) => { const n = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.14, 0.4, 14), mat(COLOR.steel, { metalness: 0.4, roughness: 0.4 })); n.position.set(x, 1.0, 0.75); n.rotation.x = Math.PI / 2; n.castShadow = true; cB.add(n); return n; });
+  const nozzles = CM.map((_, j) => (j - (nCM - 1) / 2) * 0.5).map((x) => { const n = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.14, 0.4, 14), mat(COLOR.steel, { metalness: 0.4, roughness: 0.4 })); n.position.set(x, 1.0, 0.75); n.rotation.x = Math.PI / 2; n.castShadow = true; cB.add(n); return n; });
 
   // 6. the dispatcher: a platform, the worktree (a folder), and the leak-check lamp
   { const plat = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.05, 0.3, 40), mat(COLOR.teal)); plat.position.y = 0.15; plat.castShadow = plat.receiveShadow = true; disp.add(plat); }
@@ -150,9 +151,11 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
     return { g, items };
   };
   const sysColor = (name: string) => ADAPTER_COLOR[SYS.find((s) => s.name === name)?.adapter ?? "codemem"]!;
-  const rackA = runRack(-1.0, 3, (j) => sysColor(PARTS[0]?.systems[j] ?? ""), 0.7);
-  const rackB = runRack(1.0, 3, (j) => sysColor(PARTS[1]?.systems[j] ?? ""), 0.7);
-  const rackC = runRack(0, 6, () => COLOR.paper, 1.3); rackC.g.position.z = 0.75;
+  // one rack for each part of the example merged run, and one for the new run (sizes from the data)
+  const nA = PARTS[0]?.systems.length ?? 0, nB = PARTS[1]?.systems.length ?? 0;
+  const rackA = runRack(-1.0, nA, (j) => sysColor(PARTS[0]?.systems[j] ?? ""), 0.1 + 0.2 * nA);
+  const rackB = runRack(1.0, nB, (j) => sysColor(PARTS[1]?.systems[j] ?? ""), 0.1 + 0.2 * nB);
+  const rackC = runRack(0, nA + nB, () => COLOR.paper, 0.1 + 0.2 * (nA + nB)); rackC.g.position.z = 0.75;
   rackC.items.forEach((it) => (it.visible = false));
   rackC.g.scale.setScalar(0.01);
   mini(ctx.overlay, tags, "grep run", rackA.g, 0.95);
@@ -211,7 +214,7 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
       t.add(arc(c, cardPort(j), 1.4, 0.75), j === 0 ? ">0.4" : "<0.15");
       lampTo(t, j, 0xfff1cf, 0x8a7a40, ">-0.05");
     });
-    t.add(() => { setNote(nWall, `6 ports: ${SYS.map((x) => esc(x.name)).join(", ")}`); portX.forEach((_, j) => lampOff(j)); }, "+=0.4");
+    t.add(() => { setNote(nWall, `${SYS.length} ports: ${SYS.map((x) => esc(x.name)).join(", ")}`); portX.forEach((_, j) => lampOff(j)); }, "+=0.4");
     return hold(t.to({}, { duration: 1.2 }));
   }
 
@@ -235,14 +238,14 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
       .add(() => { lampMat.color.setHex(0x7dff9a); lampMat.emissive.setHex(0x3dff6a); setNote(nTask, `${esc(cur.id)}: HEAD = <b>${cur.commit}</b> <span class="ok">ok</span>`); }, "+=0.5")
       .to({}, { duration: 0.9 });
     // 3. index groups
-    say(t, first ? `<b>3. Index.</b> grep needs no index. codemem <b>builds</b> one index for its 3 systems (the first task of a repo).`
+    say(t, first ? `<b>3. Index.</b> grep needs no index. codemem <b>builds</b> one index for its ${nCM} systems (the first task of a repo).`
       : `<b>3. Index.</b> grep needs no index. codemem <b>updates</b> its one index to the new commit (Decision 5).`);
-    t.add(() => { setNote(nGrep, `no index`); setNote(nCm, first ? `<b>build</b> once for 3 systems` : `<b>update</b> once for 3 systems`); }, "<");
+    t.add(() => { setNote(nGrep, `no index`); setNote(nCm, first ? `<b>build</b> once for ${nCM} systems` : `<b>update</b> once for ${nCM} systems`); }, "<");
     if (first) layers.forEach((l, j) => t.fromTo(l.scale, { x: 0.01, y: 0.01, z: 0.01 }, { x: 1, y: 1, z: 1, duration: 0.3, ease: "back.out(2)" }, j === 0 ? "<0.2" : "<0.15"));
     else t.to(layers[4]!.scale, { y: 1.6, duration: 0.25, yoyo: true, repeat: 1 }, "<0.2");
     t.to({}, { duration: 0.8 });
     // 4. the query goes out through each port
-    say(t, `<b>4. The query goes out through each system's port.</b> All 6 systems get the same issue text.`);
+    say(t, `<b>4. The query goes out through each system's port.</b> All ${SYS.length} systems get the same issue text.`);
     SYS.forEach((x, j) => {
       t.add(() => { queries[j]!.visible = true; queries[j]!.position.set(0, 0.5, DZ); }, j === 0 ? ">" : "<0.08")
         .add(move(queries[j]!, inFront(j), 0.55), "<")
@@ -266,7 +269,7 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
       lampTo(t, j, 0x7dff9a, 0x3dff6a, "<0.15");
       t.add(move(trays[j]!, onDisp(j), 0.45), ">");
     });
-    t.add(() => setNote(nWall, `check_hits: <span class="ok">6 of 6 ok</span>`), "<");
+    t.add(() => setNote(nWall, `check_hits: <span class="ok">${SYS.length} of ${SYS.length} ok</span>`), "<");
     // 7. each list becomes one line in its system's file
     const n = taskNo % SLOTS;
     say(t, `<b>7. The runner writes each list</b> as one line in its system's file, then takes the next task.`, ">0.4");
@@ -288,7 +291,8 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
   const ACT: (() => gsap.core.Timeline)[] = [
     () => { // the plug: a good list passes its port; a line hit without line numbers is refused
       const t = gsap.timeline().add(() => reset());
-      const good = 3, bad = 1; // cm-bm25 and grep-fn ports
+      // a good list from the first codemem port; a bad list (a line hit with no line numbers) at the first grep-fn port
+      const good = Math.max(0, SYS.findIndex((x) => x.adapter === "codemem")), bad = Math.max(0, SYS.findIndex((x) => x.adapter === "grep_fn"));
       say(t, `<b>The plug.</b> Every system talks to the runner through the same port. A list must pass check_hits there.`, 0);
       t.add(() => { trays[good]!.visible = true; trays[good]!.position.copy(boothTop("codemem")); })
         .add(move(trays[good]!, behind(good), 0.6)).add(move(trays[good]!, inFront(good), 0.4, "none"));
@@ -316,8 +320,8 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
       const t = gsap.timeline().add(() => { reset(); setNote(nGrep, `<b>${EX.grep.files_matched}</b> files match`); });
       say(t, `<b>grep.</b> ripgrep counts the keyword matches in each file. Files rank by count. The bars are the real top 10 for ${esc(EX.task.id)}.`, 0);
       bars.forEach((b, j) => t.to(b.scale, { y: b.userData.h as number, duration: 0.35, ease: "back.out(2)" }, j === 0 ? ">0.3" : "<0.12"));
-      const g = EX.grep.files[(EX.grep.gold_file_rank ?? 1) - 1]!;
-      t.add(() => setNote(nGrep, `gold file <b>${esc(short(g[0]))}</b>: rank ${EX.grep.gold_file_rank}`), "+=0.2");
+      const rank = EX.grep.gold_file_rank; // the bars show the top 10 only
+      t.add(() => setNote(nGrep, rank === null ? `gold file: <b>not found</b>` : `gold file <b>${esc(short(EX.task.gold_file))}</b>: rank ${rank}`), "+=0.2");
       return hold(t.to({}, { duration: 2.4 }));
     },
     () => { // grep-fn: functions around the match lines; then the four plus switches, one at a time
@@ -335,15 +339,16 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
       });
       return hold(t.to({}, { duration: 1.2 }));
     },
-    () => { // codemem: one build, then three searches on the same index
-      const t = gsap.timeline().add(() => { reset(); layers.forEach((l) => l.scale.setScalar(0.01)); setNote(nCm, `one index for 3 systems: <b>one build</b>`); });
-      say(t, `<b>codemem.</b> The three codemem systems have the same index settings, so they share one index: one build, three searches.`, 0);
+    () => { // codemem: one build, then one search for each codemem system, on the same index
+      const t = gsap.timeline().add(() => { reset(); layers.forEach((l) => l.scale.setScalar(0.01)); setNote(nCm, `one index for ${nCM} systems: <b>one build</b>`); });
+      say(t, `<b>codemem.</b> The ${nCM} codemem systems have the same index settings, so they share one index: one build, ${nCM} searches.`, 0);
       layers.forEach((l, j) => t.fromTo(l.scale, { x: 0.01, y: 0.01, z: 0.01 }, { x: 1, y: 1, z: 1, duration: 0.3, ease: "back.out(2)" }, j === 0 ? ">0.3" : "<0.15"));
-      t.add(() => setNote(nCm, `<b>three searches</b>: bm25 . +code . +usage`), ">0.3");
+      t.add(() => setNote(nCm, `<b>${nCM} searches</b>: ${CM.map((x) => esc(x.name)).join(" . ")}`), ">0.3");
+      const cmIdx = SYS.flatMap((x, k) => (x.adapter === "codemem" ? [k] : []));
       nozzles.forEach((n, j) => {
-        const tr = trays[3 + j]!;
+        const tr = trays[cmIdx[j] ?? 0]!;
         t.to(n.scale, { x: 1.35, z: 1.35, duration: 0.14, yoyo: true, repeat: 1 }, ">0.2")
-          .add(() => { tr.visible = true; tr.position.set(BX.codemem! + (j - 1) * 0.5, 1.0, BZ + 0.9); }, "<")
+          .add(() => { tr.visible = true; tr.position.set(BX.codemem! + (j - (nCM - 1) / 2) * 0.5, 1.0, BZ + 0.9); }, "<")
           .to(tr.position, { z: BZ + 1.3, y: 0.06, duration: 0.5, ease: "bounce.out" }, "<");
       });
       return hold(t.to({}, { duration: 1.6 }));
@@ -357,7 +362,7 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
       // positions of the rack items at full size (the racks do not move; rack C grows in above)
       const at = (rack: { g: THREE.Group; items: THREE.Mesh[] }, j: number) => new THREE.Vector3().copy(MG).add(rack.g.position).add(rack.items[j]!.position);
       copies.forEach((c, j) => {
-        const from = j < 3 ? at(rackA, j) : at(rackB, j - 3), dst = rackC.items[j]!;
+        const from = j < nA ? at(rackA, j) : at(rackB, j - nA), dst = rackC.items[j]!;
         t.add(() => { c.position.copy(from); c.visible = true; }, j === 0 ? ">0.2" : ">-0.35")
           .add(arc(c, at(rackC, j), 0.6, 0.6), "<")
           .add(() => { c.visible = false; dst.visible = true; }, ">");

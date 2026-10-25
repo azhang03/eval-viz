@@ -3,10 +3,12 @@
 import { gsap } from "gsap";
 import { fixtureB5 as EX } from "../data/load";
 import { esc } from "../lib/esc";
-import { isNotCode, isTestPath, nvLayer, nvNow, nvNum, nvShell, nvShort } from "./nv";
+import { nvLayer, nvNow, nvNum, nvShell, nvShort } from "./nv";
 import { svg, type CloserStep, type CloserView } from "./types";
 
-const kindOf = (p: string) => (isTestPath(p) ? "a test file" : isNotCode(p) ? "not code" : "code");
+// the kind of a file, by cmeval's own rule (patches.classify_path, written into the data)
+const fileKind = (p: string) => EX.grep.file_kinds[p] ?? "other";
+const kindText = (k: string) => (k === "test" ? "a test file" : k === "other" ? "not code" : "code");
 
 export function grepfnView(): CloserView {
   const S = EX.switches, GF = EX.task.gold_file, GFN = EX.task.gold_fn;
@@ -15,11 +17,13 @@ export function grepfnView(): CloserView {
   const sw = (name: string) => S.find((s) => s.switch === name)!;
   const wsorted = Object.entries(sw("idf").weights).sort((a, b) => b[1] - a[1]);
   const inside = EX.gold_file_lines.filter((l) => l.fn).length, outside = EX.gold_file_outside;
-  const files = EX.grep.files, goldRank = EX.grep.gold_file_rank ?? 0;
-  const top1 = files[0]![0], after = files[goldRank]?.[0];
-  const testWins = (name: string) => isTestPath(sw(name).top[0]?.path ?? "");
+  const files = EX.grep.files, goldRank = EX.grep.gold_file_rank;
+  const top1 = files[0]![0];
+  const inTop = goldRank !== null && goldRank <= files.length; // the data keeps the top 10 files only
+  const after = inTop ? files[goldRank]?.[0] : undefined;
+  const testWins = (name: string) => sw(name).top[0]?.kind === "test";
   const steps: CloserStep[] = [
-    { t: "Files by match count", d: `grep counts the keyword matches in each file and ranks files by count. ${nvNum(EX.grep.files_matched)} files match. Rank 1 is <code>${esc(nvShort(top1))}</code> (${kindOf(top1)}). The gold file <code>${esc(nvShort(GF))}</code> is rank ${goldRank}${after ? `, and right after it is <code>${esc(nvShort(after))}</code> (${kindOf(after)})` : ""}.` },
+    { t: "Files by match count", d: `grep counts the keyword matches in each file and ranks files by count. ${nvNum(EX.grep.files_matched)} files match. Rank 1 is <code>${esc(nvShort(top1))}</code> (${kindText(fileKind(top1))}). The gold file <code>${esc(nvShort(GF))}</code> is ${goldRank === null ? "not among them" : `rank ${goldRank}`}${after ? `, and right after it is <code>${esc(nvShort(after))}</code> (${kindText(fileKind(after))})` : ""}.` },
     { t: "Into functions", d: `An agent's next step is to read the function around each match. grep-fn does the same: each matching line in <code>${esc(nvShort(GF))}</code> drops into the innermost function around it. ${inside} lines land in a function; ${outside} lines are outside every function and are dropped.` },
     { t: "Rank the functions", d: `With no options, a function scores its number of matches.${testWins("none") ? " Long test functions that repeat common words win." : ""} The gold function <code>${esc(GFN.symbol.split(".").pop() ?? "")}</code>: ${rankTxt(sw("none").gold_fn_rank)}.` },
     { t: "+ Python files only", d: `The first switch searches only Python files, not docs, images, and data. ${nvNum(sw("none").files_total)} files become ${nvNum(sw("types").files_total)}. The gold function: ${rankTxt(sw("types").gold_fn_rank)}.${testWins("types") ? " Test functions still win." : ""}` },
@@ -29,7 +33,7 @@ export function grepfnView(): CloserView {
   ];
   const maxC = files[0]![1];
   const fileRows = files.map(([p, n], j) => {
-    const tag = isTestPath(p) ? "test" : isNotCode(p) ? "not code" : "";
+    const k = fileKind(p), tag = k === "test" ? "test" : k === "other" ? "not code" : "";
     return `<div class="fr${p === GF ? " gold" : ""}"><span class="rk">${j + 1}</span><span class="pth">${esc(nvShort(p))}${tag ? ` <em>${tag}</em>` : ""}</span><span class="bw"><i style="width:${((100 * n) / maxC).toFixed(1)}%"></i></span><span class="ct">${n}</span></div>`;
   }).join("");
   const html = nvShell("gf",
@@ -79,7 +83,7 @@ export function grepfnView(): CloserView {
     const s = S[q]!;
     root.querySelector(".sw")!.innerHTML = ["Python only", "IDF", "clean keywords", "tests last"].map((n, j) => `<span class="pill${j < q ? " on" : ""}">${n}</span>`).join("");
     root.querySelector(".rt")!.innerHTML = s.top.map((h, j) =>
-      `<div class="fr${h.symbol === GFN.symbol && h.path === GF ? " gold" : ""}"><span class="rk">${j + 1}</span><span class="pth">${esc(h.symbol ?? "")}${isTestPath(h.path) ? " <em>test</em>" : ""}</span><span class="fl">${esc(nvShort(h.path))}</span></div>`).join("");
+      `<div class="fr${h.symbol === GFN.symbol && h.path === GF ? " gold" : ""}"><span class="rk">${j + 1}</span><span class="pth">${esc(h.symbol ?? "")}${h.kind === "test" ? " <em>test</em>" : ""}</span><span class="fl">${esc(nvShort(h.path))}</span></div>`).join("");
     root.querySelector(".gl")!.innerHTML = `gold function <code>${esc(GFN.symbol)}</code>: ${rankTxt(s.gold_fn_rank)}`;
     run?.fromTo(root.querySelectorAll(".rt .fr"), { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.25, stagger: 0.04 }, 0.2);
   }
@@ -93,7 +97,7 @@ export function grepfnView(): CloserView {
     if (i === 0) {
       nvLayer(root, "files");
       run.fromTo(root.querySelectorAll('[data-l="files"] .bw i'), { scaleX: 0 }, { scaleX: 1, duration: 0.5, stagger: 0.05, transformOrigin: "0 50%" }, 0.2);
-      facts.innerHTML = `<b>files that match</b> ${nvNum(EX.grep.files_matched)}<br><b>gold file</b> ${esc(nvShort(GF))}: rank ${goldRank}`;
+      facts.innerHTML = `<b>files that match</b> ${nvNum(EX.grep.files_matched)}<br><b>gold file</b> ${esc(nvShort(GF))}: ${goldRank === null ? "not found" : `rank ${goldRank}`}`;
     } else if (i === 1) {
       nvLayer(root, "strip");
       // every tick starts in the top row; it ends in its function box, or in the dropped lane (and stays there)
