@@ -1,8 +1,9 @@
-import type { Fixture10908, FixtureB5, Manifest, ResultsFinal, Timeline } from "./types";
+import type { Fixture10908, FixtureB5, FixtureFresh, Manifest, ResultsFinal, Timeline } from "./types";
 import timelineJson from "../../data/timeline.json";
 import fixtureJson from "../../data/fixtures/10908.json";
 import b5Json from "../../data/fixtures/b5.json";
 import resultsJson from "../../data/results/dev50-final.json";
+import freshJson from "../../data/fixtures/fresh.json";
 
 export const timeline = timelineJson as Timeline;
 export const fixture10908 = fixtureJson as unknown as Fixture10908;
@@ -10,6 +11,8 @@ export const fixture10908 = fixtureJson as unknown as Fixture10908;
 export const fixtureB5 = b5Json as unknown as FixtureB5;
 /** The final dev run, made again by the real report code (scripts/gen_results.py). */
 export const resultsFinal = resultsJson as unknown as ResultsFinal;
+/** The fresh-v1 funnel and two real fresh tasks through the collector code (scripts/gen_fresh.py). */
+export const fixtureFresh = freshJson as unknown as FixtureFresh;
 
 // One lazy chunk for each manifest, so a page loads only the commits it shows.
 const manifests = import.meta.glob<Manifest>("../../data/manifest/*.json", { import: "default" });

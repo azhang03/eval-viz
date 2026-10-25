@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { STAGES } from "../../../content/stages";
 import { FloorScene } from "../../floor/FloorScene";
 import { system } from "../../state/system";
+import { live } from "../../state/live";
 import { closer } from "../../closers/host";
 import { hoverFiles, openStage, selectStep } from "./actions";
 import "./Floor.css";
@@ -15,7 +16,7 @@ export function Floor() {
 
   useEffect(() => {
     if (!host.current || !overlay.current) return;
-    const scene = new FloorScene(host.current, overlay.current, STAGES, { openStage, selectStep, hoverFiles });
+    const scene = new FloorScene(host.current, overlay.current, STAGES, { openStage, selectStep, hoverFiles, live: (step, html) => live.set({ step, html }) });
     const sync = () => {
       const { opened, step } = system.get();
       scene.sync({ opened, step });

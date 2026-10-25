@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { latestManifest } from "../src/data/load";
 import { EXPLANATIONS } from "../content/explanations";
-import { STAGES } from "../content/stages";
+import { STAGES, stepLabel } from "../content/stages";
 
 const manifest = await latestManifest();
 
@@ -28,6 +28,13 @@ describe("content matches the newest manifest", () => {
       }
     }
     expect(problems).toEqual([]);
+  });
+
+  it("each route of COLLECT numbers its steps on its own", () => {
+    const collect = STAGES.find((s) => s.id === "collect")!;
+    expect((collect.parts ?? []).map((_, k) => stepLabel(collect, k))).toEqual(["S1", "G1", "G2", "G3", "G4", "G5", "1", "2", "3", "4"]);
+    const run = STAGES.find((s) => s.id === "run")!;
+    expect(stepLabel(run, 0)).toBe("1");
   });
 
   it("a built stage has no ghost parts, and a planned stage has no code", () => {

@@ -179,3 +179,62 @@ export type ResultsFinal = {
   }[];
   b4: { run: string; result: string; systems: { system: string; tasks: number; same_top: number; largest_metric_diff: number; largest_token_diff_pct: number; result: string }[] };
 };
+
+// ---- the fresh-task route of COLLECT (data/fixtures/fresh.json, scripts/gen_fresh.py)
+
+export type FunnelCounts = Record<string, number>;
+
+export type FreshExample = {
+  id: string;
+  repo: string;
+  split: "dev" | "test";
+  baseCommit: string;
+  mergeType: "squash" | "merge" | "rebase";
+  gold: { files: RepoPath[]; functions: { path: RepoPath; start: number; end: number; symbol: string }[] };
+  tags: Record<string, unknown>;
+  pr: {
+    number: number; url: string; title: string; body: string; createdAt: string; mergedAt: string; changedFiles: number;
+    mergeCommit: string | null;
+    commits: { oid: string; message: string }[];
+    closingList: { number: number; repo: string }[];
+  };
+  issue: {
+    number: number; url: string; createdAt: string; title: string; body: string;
+    versions: { at: string; body: string | null }[];
+    renames: { createdAt: string; previousTitle: string; currentTitle: string }[];
+  };
+  /** Answers of the real collector functions on this PR and issue. */
+  real: {
+    prText: string;
+    matches: { start: number; end: number; word: string; number: number; closing: boolean }[];
+    listLinks: number[];
+    regexLinks: number[];
+    findLinks: Record<string, "list" | "regex" | "both">;
+    regexWithoutColon: number[];
+    bodyAt: { body: string; editedAfter: boolean; missing: boolean };
+    titleAt: { title: string; renamedAfter: boolean };
+    query: string;
+    leak: string | null;
+    queryNow: string;
+    leakNow: string | null;
+  };
+};
+
+export type FixtureFresh = {
+  rev: string;
+  config: string;
+  since: string;
+  until: string;
+  settings: { min_body_chars: number; extra_bots: string[]; max_code_files: number; max_code_lines: number };
+  labeler: string;
+  searchCap: number;
+  windows: [string, string][];
+  steps: { key: string; text: string }[];
+  total: FunnelCounts;
+  linkMethods: Record<"both" | "list" | "regex", number>;
+  repos: Record<string, { counts: FunnelCounts; dropReasons: Record<string, number>; linkMethods: Record<string, number>; tasks: number }>;
+  stats: { tasks: number; tasks_per_split: Record<string, number>; tasks_per_repo: Record<string, number>; share_gold_all_python: number; merge_types: Record<string, number> };
+  candidates: { repo: string; possible: number; pythonShare: number }[];
+  chosen: string[];
+  examples: { crate: FreshExample; links: FreshExample };
+};

@@ -1,0 +1,795 @@
+{
+ "rev": "96464b4",
+ "config": "fresh-v1.toml",
+ "since": "2026-07-01",
+ "until": "2026-10-22",
+ "settings": {
+  "min_body_chars": 100,
+  "extra_bots": [],
+  "max_code_files": 5,
+  "max_code_lines": 200
+ },
+ "labeler": "cmeval-labels/3",
+ "searchCap": 1000,
+ "windows": [
+  [
+   "2026-07-01",
+   "2026-07-07"
+  ],
+  [
+   "2026-07-08",
+   "2026-07-14"
+  ],
+  [
+   "2026-07-15",
+   "2026-07-21"
+  ],
+  [
+   "2026-07-22",
+   "2026-07-28"
+  ],
+  [
+   "2026-07-29",
+   "2026-08-04"
+  ],
+  [
+   "2026-08-05",
+   "2026-08-11"
+  ],
+  [
+   "2026-08-12",
+   "2026-08-18"
+  ],
+  [
+   "2026-08-19",
+   "2026-08-25"
+  ],
+  [
+   "2026-08-26",
+   "2026-09-01"
+  ],
+  [
+   "2026-09-02",
+   "2026-09-08"
+  ],
+  [
+   "2026-09-09",
+   "2026-09-15"
+  ],
+  [
+   "2026-09-16",
+   "2026-09-22"
+  ],
+  [
+   "2026-09-23",
+   "2026-09-29"
+  ],
+  [
+   "2026-09-30",
+   "2026-10-06"
+  ],
+  [
+   "2026-10-07",
+   "2026-10-13"
+  ],
+  [
+   "2026-10-14",
+   "2026-10-20"
+  ],
+  [
+   "2026-10-21",
+   "2026-10-22"
+  ]
+ ],
+ "steps": [
+  {
+   "key": "merged",
+   "text": "merged into the default branch in the date range"
+  },
+  {
+   "key": "opened_after_cutoff",
+   "text": "the fix PR was opened on or after the start date (its code was not public before)"
+  },
+  {
+   "key": "not_bot",
+   "text": "author is not a bot"
+  },
+  {
+   "key": "one_link",
+   "text": "links exactly one issue in the same repo (GitHub's list or the SWE-bench regex)"
+  },
+  {
+   "key": "is_issue",
+   "text": "the link is an issue that exists (not a PR)"
+  },
+  {
+   "key": "issue_before_pr",
+   "text": "the issue was opened before the fix PR (not written after the fix)"
+  },
+  {
+   "key": "body_ok",
+   "text": "body (as of when the fix PR was opened) has the minimum length"
+  },
+  {
+   "key": "no_leak",
+   "text": "query does not name the fix PR or a fix commit"
+  },
+  {
+   "key": "base_found",
+   "text": "base commit found from the merge type (Decision 7)"
+  },
+  {
+   "key": "files_match",
+   "text": "our patch touches exactly the PR's files"
+  },
+  {
+   "key": "applies",
+   "text": "the code patch applies at the base commit"
+  },
+  {
+   "key": "size_ok",
+   "text": "1 to max_code_files code files and at most max_code_lines changed code lines"
+  },
+  {
+   "key": "labeled",
+   "text": "labeled, with at least one gold file that exists at the base commit"
+  }
+ ],
+ "total": {
+  "merged": 21822,
+  "opened_after_cutoff": 20409,
+  "not_bot": 19861,
+  "one_link": 3091,
+  "is_issue": 3056,
+  "issue_before_pr": 3008,
+  "body_ok": 3003,
+  "no_leak": 3002,
+  "base_found": 3002,
+  "files_match": 2990,
+  "applies": 2990,
+  "size_ok": 2086,
+  "labeled": 2084
+ },
+ "linkMethods": {
+  "both": 2646,
+  "list": 334,
+  "regex": 22
+ },
+ "repos": {
+  "home-assistant/core": {
+   "counts": {
+    "merged": 7828,
+    "opened_after_cutoff": 7530,
+    "not_bot": 7300,
+    "one_link": 1214,
+    "is_issue": 1211,
+    "issue_before_pr": 1202,
+    "body_ok": 1202,
+    "no_leak": 1202,
+    "base_found": 1202,
+    "files_match": 1199,
+    "applies": 1199,
+    "size_ok": 756,
+    "labeled": 756
+   },
+   "dropReasons": {
+    "fix PR opened before the start date": 298,
+    "bot author": 230,
+    "no linked issue": 6037,
+    "several linked issues": 49,
+    "link is a PR, not an issue": 3,
+    "issue opened after the fix PR": 9,
+    "too many changed lines": 22,
+    "no code files": 394,
+    "too many code files": 27,
+    "file list differs": 3
+   },
+   "linkMethods": {
+    "both": 1185,
+    "regex": 5,
+    "list": 12
+   },
+   "tasks": 756
+  },
+  "vllm-project/vllm": {
+   "counts": {
+    "merged": 5344,
+    "opened_after_cutoff": 4978,
+    "not_bot": 4978,
+    "one_link": 507,
+    "is_issue": 488,
+    "issue_before_pr": 466,
+    "body_ok": 466,
+    "no_leak": 465,
+    "base_found": 465,
+    "files_match": 465,
+    "applies": 465,
+    "size_ok": 381,
+    "labeled": 381
+   },
+   "dropReasons": {
+    "fix PR opened before the start date": 366,
+    "no linked issue": 4459,
+    "several linked issues": 12,
+    "link is a PR, not an issue": 19,
+    "issue opened after the fix PR": 22,
+    "leak": 1,
+    "no code files": 33,
+    "too many changed lines": 18,
+    "too many code files": 33
+   },
+   "linkMethods": {
+    "both": 435,
+    "list": 19,
+    "regex": 11
+   },
+   "tasks": 381
+  },
+  "apache/airflow": {
+   "counts": {
+    "merged": 2978,
+    "opened_after_cutoff": 2762,
+    "not_bot": 2552,
+    "one_link": 326,
+    "is_issue": 320,
+    "issue_before_pr": 316,
+    "body_ok": 315,
+    "no_leak": 315,
+    "base_found": 315,
+    "files_match": 313,
+    "applies": 313,
+    "size_ok": 230,
+    "labeled": 229
+   },
+   "dropReasons": {
+    "fix PR opened before the start date": 216,
+    "no linked issue": 2224,
+    "bot author": 210,
+    "several linked issues": 2,
+    "issue opened after the fix PR": 4,
+    "short body": 1,
+    "link is a PR, not an issue": 6,
+    "too many changed lines": 18,
+    "no code files": 35,
+    "too many code files": 30,
+    "more than 100 files": 2,
+    "only new files": 1
+   },
+   "linkMethods": {
+    "list": 254,
+    "both": 59,
+    "regex": 2
+   },
+   "tasks": 229
+  },
+  "python/cpython": {
+   "counts": {
+    "merged": 1780,
+    "opened_after_cutoff": 1549,
+    "not_bot": 1542,
+    "one_link": 144,
+    "is_issue": 143,
+    "issue_before_pr": 141,
+    "body_ok": 139,
+    "no_leak": 139,
+    "base_found": 139,
+    "files_match": 139,
+    "applies": 139,
+    "size_ok": 89,
+    "labeled": 89
+   },
+   "dropReasons": {
+    "fix PR opened before the start date": 231,
+    "no linked issue": 1395,
+    "bot author": 7,
+    "several linked issues": 3,
+    "issue opened after the fix PR": 2,
+    "short body": 2,
+    "issue not found": 1,
+    "no code files": 42,
+    "too many code files": 6,
+    "too many changed lines": 2
+   },
+   "linkMethods": {
+    "both": 104,
+    "list": 33,
+    "regex": 2
+   },
+   "tasks": 89
+  },
+  "pandas-dev/pandas": {
+   "counts": {
+    "merged": 1346,
+    "opened_after_cutoff": 1257,
+    "not_bot": 1193,
+    "one_link": 497,
+    "is_issue": 495,
+    "issue_before_pr": 494,
+    "body_ok": 492,
+    "no_leak": 492,
+    "base_found": 492,
+    "files_match": 491,
+    "applies": 491,
+    "size_ok": 352,
+    "labeled": 352
+   },
+   "dropReasons": {
+    "fix PR opened before the start date": 89,
+    "no linked issue": 666,
+    "bot author": 64,
+    "several linked issues": 30,
+    "link is a PR, not an issue": 2,
+    "short body": 2,
+    "issue opened after the fix PR": 1,
+    "no code files": 120,
+    "too many code files": 10,
+    "too many changed lines": 9,
+    "more than 100 files": 1
+   },
+   "linkMethods": {
+    "both": 481,
+    "list": 10,
+    "regex": 1
+   },
+   "tasks": 352
+  },
+  "ray-project/ray": {
+   "counts": {
+    "merged": 1343,
+    "opened_after_cutoff": 1211,
+    "not_bot": 1211,
+    "one_link": 229,
+    "is_issue": 227,
+    "issue_before_pr": 221,
+    "body_ok": 221,
+    "no_leak": 221,
+    "base_found": 221,
+    "files_match": 221,
+    "applies": 221,
+    "size_ok": 146,
+    "labeled": 145
+   },
+   "dropReasons": {
+    "fix PR opened before the start date": 132,
+    "no linked issue": 980,
+    "several linked issues": 2,
+    "issue opened after the fix PR": 6,
+    "link is a PR, not an issue": 2,
+    "no code files": 32,
+    "too many code files": 31,
+    "too many changed lines": 12,
+    "only new files": 1
+   },
+   "linkMethods": {
+    "both": 218,
+    "list": 3
+   },
+   "tasks": 145
+  },
+  "huggingface/transformers": {
+   "counts": {
+    "merged": 1203,
+    "opened_after_cutoff": 1122,
+    "not_bot": 1085,
+    "one_link": 174,
+    "is_issue": 172,
+    "issue_before_pr": 168,
+    "body_ok": 168,
+    "no_leak": 168,
+    "base_found": 168,
+    "files_match": 162,
+    "applies": 162,
+    "size_ok": 132,
+    "labeled": 132
+   },
+   "dropReasons": {
+    "fix PR opened before the start date": 81,
+    "no linked issue": 907,
+    "bot author": 37,
+    "several linked issues": 4,
+    "issue opened after the fix PR": 4,
+    "link is a PR, not an issue": 2,
+    "too many code files": 25,
+    "more than 100 files": 6,
+    "no code files": 4,
+    "too many changed lines": 1
+   },
+   "linkMethods": {
+    "both": 164,
+    "list": 3,
+    "regex": 1
+   },
+   "tasks": 132
+  }
+ },
+ "stats": {
+  "tasks": 2084,
+  "tasks_per_repo": {
+   "apache/airflow": 229,
+   "home-assistant/core": 756,
+   "huggingface/transformers": 132,
+   "pandas-dev/pandas": 352,
+   "python/cpython": 89,
+   "ray-project/ray": 145,
+   "vllm-project/vllm": 381
+  },
+  "mean_gold_files": 1.5,
+  "mean_gold_classes": 0.98,
+  "mean_gold_functions": 1.93,
+  "share_no_gold_function": 0.155,
+  "share_module_level_change": 0.515,
+  "share_partial_labels": 0.088,
+  "share_identifier_in_query": 0.62,
+  "share_with_unretrievable_functions": 0.234,
+  "tasks_per_split": {
+   "dev": 399,
+   "test": 1685
+  },
+  "share_gold_all_python": 0.914,
+  "merge_types": {
+   "squash": 2084
+  }
+ },
+ "candidates": [
+  {
+   "repo": "home-assistant/core",
+   "possible": 1226,
+   "pythonShare": 1.0
+  },
+  {
+   "repo": "vllm-project/vllm",
+   "possible": 482,
+   "pythonShare": 0.854
+  },
+  {
+   "repo": "huggingface/transformers",
+   "possible": 151,
+   "pythonShare": 0.999
+  },
+  {
+   "repo": "pytorch/pytorch",
+   "possible": 0,
+   "pythonShare": 0.663
+  },
+  {
+   "repo": "apache/airflow",
+   "possible": 338,
+   "pythonShare": 0.875
+  },
+  {
+   "repo": "ansible/ansible",
+   "possible": 22,
+   "pythonShare": 0.863
+  },
+  {
+   "repo": "getsentry/sentry",
+   "possible": 44,
+   "pythonShare": 0.565
+  },
+  {
+   "repo": "odoo/odoo",
+   "possible": 0,
+   "pythonShare": 0.522
+  },
+  {
+   "repo": "pandas-dev/pandas",
+   "possible": 519,
+   "pythonShare": 0.907
+  },
+  {
+   "repo": "ray-project/ray",
+   "possible": 230,
+   "pythonShare": 0.781
+  },
+  {
+   "repo": "python/cpython",
+   "possible": 165,
+   "pythonShare": 0.632
+  },
+  {
+   "repo": "saltstack/salt",
+   "possible": 8,
+   "pythonShare": 0.969
+  },
+  {
+   "repo": "kubernetes/kubernetes",
+   "possible": 194,
+   "pythonShare": 0.0
+  },
+  {
+   "repo": "microsoft/vscode",
+   "possible": 1093,
+   "pythonShare": 0.0
+  },
+  {
+   "repo": "backstage/backstage",
+   "possible": 73,
+   "pythonShare": 0.0
+  },
+  {
+   "repo": "godotengine/godot",
+   "possible": 447,
+   "pythonShare": 0.01
+  }
+ ],
+ "chosen": [
+  "home-assistant/core",
+  "pandas-dev/pandas",
+  "vllm-project/vllm",
+  "apache/airflow",
+  "ray-project/ray",
+  "python/cpython",
+  "huggingface/transformers"
+ ],
+ "examples": {
+  "crate": {
+   "id": "python__cpython-154728",
+   "repo": "python/cpython",
+   "split": "dev",
+   "baseCommit": "7d760134cc20f444412c54fc8395ca6f2421ad73",
+   "mergeType": "squash",
+   "gold": {
+    "files": [
+     "Lib/shutil.py"
+    ],
+    "classes": [],
+    "functions": [
+     {
+      "path": "Lib/shutil.py",
+      "start": 283,
+      "end": 361,
+      "symbol": "copyfile"
+     }
+    ],
+    "lines": [
+     {
+      "path": "Lib/shutil.py",
+      "start": 294,
+      "end": 294,
+      "symbol": null
+     },
+     {
+      "path": "Lib/shutil.py",
+      "start": 296,
+      "end": 296,
+      "symbol": null
+     },
+     {
+      "path": "Lib/shutil.py",
+      "start": 318,
+      "end": 318,
+      "symbol": null
+     }
+    ]
+   },
+   "tags": {
+    "n_gold_files": 1,
+    "n_gold_classes": 0,
+    "n_gold_functions": 1,
+    "module_level_change": false,
+    "partial_labels": false,
+    "hunks_moved": 0,
+    "has_test_patch": true,
+    "identifier_in_query": true,
+    "query_tokens": null,
+    "body_edited_after_fix": true,
+    "title_edited_after_fix": false,
+    "link_method": "both",
+    "fix_opened_at": "2026-07-26T09:54:04Z",
+    "n_code_files": 1,
+    "code_lines_changed": 5,
+    "gold_languages": [
+     "python"
+    ],
+    "gold_all_python": true,
+    "max_gold_file_bytes": 60143,
+    "max_gold_file_lines": 1646,
+    "repo_py_files": 2347
+   },
+   "pr": {
+    "number": 154728,
+    "url": "https://github.com/python/cpython/pull/154728",
+    "title": "gh-154726: Fix `shutil.copyfile()` for symlinks to special files with `follow_symlinks=False`",
+    "body": "Fixes #154726.\r\n\r\n- Avoid checking a source symlink's target when `follow_symlinks=False`\r\n- Add a regression test using a symlink to `/dev/null`.\r\n\n\n<!-- gh-issue-number: gh-154726 -->\n* Issue: gh-154726\n<!-- /gh-issue-number -->\n",
+    "createdAt": "2026-07-26T09:54:04Z",
+    "mergedAt": "2026-07-31T11:36:05Z",
+    "changedFiles": 3,
+    "mergeCommit": "f5afa895ae322ea89c5942b0b21094c124293dd8",
+    "commits": [
+     {
+      "oid": "145155140f4f25870b2fb832c4b781bb76a48cff",
+      "message": "gh-154726: Fix `shutil.copyfile()` for device symlinks with `follow_symlinks=False`"
+     },
+     {
+      "oid": "88fa4c7a2f72da212b11f46fd379b0c68b5ce00f",
+      "message": "gh-154726: Test FIFO and socket symlinks in `shutil.copyfile()`"
+     },
+     {
+      "oid": "2fb2134bf7ce429c2eaf9389b9064cf12c8ce71a",
+      "message": "gh-154726: Match socket bind error handling in shutil tests"
+     },
+     {
+      "oid": "bf7e3d264cf61f193e9e028d894d4645b5f382ab",
+      "message": "gh-154726: Group shutil special-file symlink tests"
+     }
+    ],
+    "closingList": [
+     {
+      "number": 154726,
+      "repo": "python/cpython"
+     }
+    ]
+   },
+   "issue": {
+    "number": 154726,
+    "url": "https://github.com/python/cpython/issues/154726",
+    "createdAt": "2026-07-26T09:42:41Z",
+    "title": "`shutil.copyfile()` rejects device symlinks with `follow_symlinks=False`",
+    "body": "# Bug report\n\n### Bug description:\n\nI think it's a regression from https://github.com/python/cpython/pull/142693.\n\n`copyfile()` rejects a symlink to a device even when `follow_symlinks=False`.\n\n\n```python\nimport os\nimport shutil\nimport tempfile\n\nwith tempfile.TemporaryDirectory() as directory:\n    src = os.path.join(directory, \"src\")\n    dst = os.path.join(directory, \"dst\")\n    os.symlink(\"/dev/null\", src)\n    shutil.copyfile(src, dst, follow_symlinks=False)\n```\n\n- Current behavior: `shutil.SpecialFileError: `.../src` is a character device`\n- Expected: `dst` is created as a symlink to `/dev/null`\n\nThe docs say:\n> If `follow_symlinks` is false and `src` is a symbolic link, a new symbolic link will be created instead of copying the file `src` points to.\n\n\n\n### CPython versions tested on:\n\nCPython main branch\n\n### Operating systems tested on:\n\nmacOS\n\n<!-- gh-linked-prs -->\n### Linked PRs\n* gh-154728\n<!-- /gh-linked-prs -->\n",
+    "versions": [
+     {
+      "at": "2026-07-26T09:42:41Z",
+      "body": "### Bug description:\n\nI think it's a regression from https://github.com/python/cpython/pull/142693.\n\n`copyfile()` rejects a symlink to a device even when `follow_symlinks=False`.\n\n\n```python\nimport os\nimport shutil\nimport tempfile\n\nwith tempfile.TemporaryDirectory() as directory:\n    src = os.path.join(directory, \"src\")\n    dst = os.path.join(directory, \"dst\")\n    os.symlink(\"/dev/null\", src)\n    shutil.copyfile(src, dst, follow_symlinks=False)\n```\n\n- Current behavior: `shutil.SpecialFileError: `.../src` is a character device`\n- Expected: `dst` is created as a symlink to `/dev/null`\n\nThe docs say:\n> If `follow_symlinks` is false and `src` is a symbolic link, a new symbolic link will be created instead of copying the file `src` points to.\n\n\n\n### CPython versions tested on:\n\nCPython main branch\n\n### Operating systems tested on:\n\nmacOS"
+     },
+     {
+      "at": "2026-07-26T09:42:51Z",
+      "body": "# Bug report\n\n### Bug description:\n\nI think it's a regression from https://github.com/python/cpython/pull/142693.\n\n`copyfile()` rejects a symlink to a device even when `follow_symlinks=False`.\n\n\n```python\nimport os\nimport shutil\nimport tempfile\n\nwith tempfile.TemporaryDirectory() as directory:\n    src = os.path.join(directory, \"src\")\n    dst = os.path.join(directory, \"dst\")\n    os.symlink(\"/dev/null\", src)\n    shutil.copyfile(src, dst, follow_symlinks=False)\n```\n\n- Current behavior: `shutil.SpecialFileError: `.../src` is a character device`\n- Expected: `dst` is created as a symlink to `/dev/null`\n\nThe docs say:\n> If `follow_symlinks` is false and `src` is a symbolic link, a new symbolic link will be created instead of copying the file `src` points to.\n\n\n\n### CPython versions tested on:\n\nCPython main branch\n\n### Operating systems tested on:\n\nmacOS"
+     },
+     {
+      "at": "2026-07-26T09:54:11Z",
+      "body": "# Bug report\n\n### Bug description:\n\nI think it's a regression from https://github.com/python/cpython/pull/142693.\n\n`copyfile()` rejects a symlink to a device even when `follow_symlinks=False`.\n\n\n```python\nimport os\nimport shutil\nimport tempfile\n\nwith tempfile.TemporaryDirectory() as directory:\n    src = os.path.join(directory, \"src\")\n    dst = os.path.join(directory, \"dst\")\n    os.symlink(\"/dev/null\", src)\n    shutil.copyfile(src, dst, follow_symlinks=False)\n```\n\n- Current behavior: `shutil.SpecialFileError: `.../src` is a character device`\n- Expected: `dst` is created as a symlink to `/dev/null`\n\nThe docs say:\n> If `follow_symlinks` is false and `src` is a symbolic link, a new symbolic link will be created instead of copying the file `src` points to.\n\n\n\n### CPython versions tested on:\n\nCPython main branch\n\n### Operating systems tested on:\n\nmacOS\n\n<!-- gh-linked-prs -->\n### Linked PRs\n* gh-154728\n<!-- /gh-linked-prs -->\n"
+     }
+    ],
+    "renames": []
+   },
+   "real": {
+    "prText": "gh-154726: Fix `shutil.copyfile()` for symlinks to special files with `follow_symlinks=False`\nFixes #154726.\r\n\r\n- Avoid checking a source symlink's target when `follow_symlinks=False`\r\n- Add a regression test using a symlink to `/dev/null`.\r\n\n\n\n* Issue: gh-154726\n\n\ngh-154726: Fix `shutil.copyfile()` for device symlinks with `follow_symlinks=False`\ngh-154726: Test FIFO and socket symlinks in `shutil.copyfile()`\ngh-154726: Match socket bind error handling in shutil tests\ngh-154726: Group shutil special-file symlink tests",
+    "matches": [
+     {
+      "start": 94,
+      "end": 107,
+      "word": "Fixes",
+      "number": 154726,
+      "closing": true
+     }
+    ],
+    "listLinks": [
+     154726
+    ],
+    "regexLinks": [
+     154726
+    ],
+    "findLinks": {
+     "154726": "both"
+    },
+    "regexWithoutColon": [
+     154726
+    ],
+    "bodyAt": {
+     "body": "# Bug report\n\n### Bug description:\n\nI think it's a regression from https://github.com/python/cpython/pull/142693.\n\n`copyfile()` rejects a symlink to a device even when `follow_symlinks=False`.\n\n\n```python\nimport os\nimport shutil\nimport tempfile\n\nwith tempfile.TemporaryDirectory() as directory:\n    src = os.path.join(directory, \"src\")\n    dst = os.path.join(directory, \"dst\")\n    os.symlink(\"/dev/null\", src)\n    shutil.copyfile(src, dst, follow_symlinks=False)\n```\n\n- Current behavior: `shutil.SpecialFileError: `.../src` is a character device`\n- Expected: `dst` is created as a symlink to `/dev/null`\n\nThe docs say:\n> If `follow_symlinks` is false and `src` is a symbolic link, a new symbolic link will be created instead of copying the file `src` points to.\n\n\n\n### CPython versions tested on:\n\nCPython main branch\n\n### Operating systems tested on:\n\nmacOS",
+     "editedAfter": true,
+     "missing": false
+    },
+    "titleAt": {
+     "title": "`shutil.copyfile()` rejects device symlinks with `follow_symlinks=False`",
+     "renamedAfter": false
+    },
+    "query": "`shutil.copyfile()` rejects device symlinks with `follow_symlinks=False`\n\n# Bug report\n\n### Bug description:\n\nI think it's a regression from https://github.com/python/cpython/pull/142693.\n\n`copyfile()` rejects a symlink to a device even when `follow_symlinks=False`.\n\n\n```python\nimport os\nimport shutil\nimport tempfile\n\nwith tempfile.TemporaryDirectory() as directory:\n    src = os.path.join(directory, \"src\")\n    dst = os.path.join(directory, \"dst\")\n    os.symlink(\"/dev/null\", src)\n    shutil.copyfile(src, dst, follow_symlinks=False)\n```\n\n- Current behavior: `shutil.SpecialFileError: `.../src` is a character device`\n- Expected: `dst` is created as a symlink to `/dev/null`\n\nThe docs say:\n> If `follow_symlinks` is false and `src` is a symbolic link, a new symbolic link will be created instead of copying the file `src` points to.\n\n\n\n### CPython versions tested on:\n\nCPython main branch\n\n### Operating systems tested on:\n\nmacOS",
+    "leak": null,
+    "queryNow": "`shutil.copyfile()` rejects device symlinks with `follow_symlinks=False`\n\n# Bug report\n\n### Bug description:\n\nI think it's a regression from https://github.com/python/cpython/pull/142693.\n\n`copyfile()` rejects a symlink to a device even when `follow_symlinks=False`.\n\n\n```python\nimport os\nimport shutil\nimport tempfile\n\nwith tempfile.TemporaryDirectory() as directory:\n    src = os.path.join(directory, \"src\")\n    dst = os.path.join(directory, \"dst\")\n    os.symlink(\"/dev/null\", src)\n    shutil.copyfile(src, dst, follow_symlinks=False)\n```\n\n- Current behavior: `shutil.SpecialFileError: `.../src` is a character device`\n- Expected: `dst` is created as a symlink to `/dev/null`\n\nThe docs say:\n> If `follow_symlinks` is false and `src` is a symbolic link, a new symbolic link will be created instead of copying the file `src` points to.\n\n\n\n### CPython versions tested on:\n\nCPython main branch\n\n### Operating systems tested on:\n\nmacOS\n\n\n### Linked PRs\n* gh-154728",
+    "leakNow": null
+   }
+  },
+  "links": {
+   "id": "apache__airflow-69916",
+   "repo": "apache/airflow",
+   "split": "dev",
+   "baseCommit": "60b1848e4c65ecfe79b1d5bba4d611203576df6c",
+   "mergeType": "squash",
+   "gold": {
+    "files": [
+     "shared/logging/src/airflow_shared/logging/structlog.py"
+    ],
+    "classes": [],
+    "functions": [
+     {
+      "path": "shared/logging/src/airflow_shared/logging/structlog.py",
+      "start": 542,
+      "end": 725,
+      "symbol": "configure_logging"
+     }
+    ],
+    "lines": [
+     {
+      "path": "shared/logging/src/airflow_shared/logging/structlog.py",
+      "start": 711,
+      "end": 711,
+      "symbol": null
+     }
+    ]
+   },
+   "tags": {
+    "n_gold_files": 1,
+    "n_gold_classes": 0,
+    "n_gold_functions": 1,
+    "module_level_change": false,
+    "partial_labels": false,
+    "hunks_moved": 0,
+    "has_test_patch": true,
+    "identifier_in_query": false,
+    "query_tokens": null,
+    "body_edited_after_fix": false,
+    "title_edited_after_fix": false,
+    "link_method": "list",
+    "fix_opened_at": "2026-07-15T11:03:59Z",
+    "n_code_files": 1,
+    "code_lines_changed": 1,
+    "gold_languages": [
+     "python"
+    ],
+    "gold_all_python": true,
+    "max_gold_file_bytes": 34401,
+    "max_gold_file_lines": 897,
+    "repo_py_files": 7637
+   },
+   "pr": {
+    "number": 69916,
+    "url": "https://github.com/apache/airflow/pull/69916",
+    "title": "Suppress noisy Alembic plugin setup logs",
+    "body": "Alembic emits autogenerate plugin registration messages at INFO during CLI startup. Those unrelated lines contaminate machine-readable command output, while warnings and errors still need to remain visible.\r\n\r\ncloses: #69911\r\n\r\n\r\n---\r\n\r\n##### Was generative AI tooling used to co-author this PR?\r\n\r\n<!--\r\nIf generative AI tooling has been used in the process of authoring this PR, please\r\nchange below checkbox to `[X]` followed by the name of the tool, uncomment the \"Generated-by\".\r\n-->\r\n\r\n- [x] Yes (please specify the tool below)\r\n\r\nGPT-5.6\r\n",
+    "createdAt": "2026-07-15T11:03:59Z",
+    "mergedAt": "2026-07-20T07:53:46Z",
+    "changedFiles": 2,
+    "mergeCommit": "58e124b88775314373ff5a5f0ed5432f1cbe2030",
+    "commits": [
+     {
+      "oid": "c99493952b917ff4ff3da5456bc978711d5e2aaa",
+      "message": "Suppress noisy Alembic plugin setup logs\n\nAlembic emits autogenerate plugin registration messages at INFO during CLI startup. Those unrelated lines contaminate machine-readable command output, while warnings and errors still need to remain visible."
+     }
+    ],
+    "closingList": [
+     {
+      "number": 69911,
+      "repo": "apache/airflow"
+     }
+    ]
+   },
+   "issue": {
+    "number": 69911,
+    "url": "https://github.com/apache/airflow/issues/69911",
+    "createdAt": "2026-07-15T09:18:42Z",
+    "title": "Alembic logs included in the stdout output when performing airflow cli commands",
+    "body": "### Under which category would you file this issue?\n\nAirflow Core\n\n### Apache Airflow version\n\n3.3.0\n\n### What happened and how to reproduce it?\n\nWhen executing `airflow dags list --columns dag_id,fileloc,owners,is_paused --output json` alembic logs are included in the response:\n```\n2026-07-15T09:14:02.822021Z [info     ] setup plugin alembic.autogenerate.schemas [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822120Z [info     ] setup plugin alembic.autogenerate.tables [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822171Z [info     ] setup plugin alembic.autogenerate.types [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822210Z [info     ] setup plugin alembic.autogenerate.constraints [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822244Z [info     ] setup plugin alembic.autogenerate.defaults [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822280Z [info     ] setup plugin alembic.autogenerate.comments [alembic.runtime.plugins] loc=plugins.py:37\n```\n\nI hoped that https://github.com/apache/airflow/pull/65655 resolves the issue however it does not.\n\n\n\n### What you think should happen instead?\n\nI expect only `json` value to be returned without additional logs so it would be easily parseable.\n\n### Operating System\n\n_No response_\n\n### Deployment\n\nOfficial Apache Airflow Helm Chart\n\n### Apache Airflow Provider(s)\n\n_No response_\n\n### Versions of Apache Airflow Providers\n\n```\napache-airflow-providers-amazon==9.31.0\napache-airflow-providers-cncf-kubernetes==10.19.0\napache-airflow-providers-common-compat==1.15.0\napache-airflow-providers-common-io==1.8.0\napache-airflow-providers-common-sql==2.0.1\napache-airflow-providers-databricks==7.16.1\napache-airflow-providers-fab==3.7.1\napache-airflow-providers-github==2.11.3\napache-airflow-providers-hashicorp==4.7.1\napache-airflow-providers-http==6.0.4\napache-airflow-providers-microsoft-mssql==4.7.0\napache-airflow-providers-mysql==6.6.1\napache-airflow-providers-postgres==6.8.0\napache-airflow-providers-sftp==5.8.2\napache-airflow-providers-slack==9.10.2\napache-airflow-providers-smtp==3.0.1\napache-airflow-providers-ssh==5.0.4\napache-airflow-providers-standard==1.15.0\n```\n\n### Official Helm Chart version\n\n1.22.0 (latest released)\n\n### Kubernetes Version\n\n_No response_\n\n### Helm Chart configuration\n\n_No response_\n\n### Docker Image customizations\n\n_No response_\n\n### Anything else?\n\n_No response_\n\n### Are you willing to submit PR?\n\n- [x] Yes I am willing to submit a PR!\n\n### Code of Conduct\n\n- [x] I agree to follow this project's [Code of Conduct](https://github.com/apache/airflow/blob/main/CODE_OF_CONDUCT.md)\n",
+    "versions": [],
+    "renames": []
+   },
+   "real": {
+    "prText": "Suppress noisy Alembic plugin setup logs\nAlembic emits autogenerate plugin registration messages at INFO during CLI startup. Those unrelated lines contaminate machine-readable command output, while warnings and errors still need to remain visible.\r\n\r\ncloses: #69911\r\n\r\n\r\n---\r\n\r\n##### Was generative AI tooling used to co-author this PR?\r\n\r\n\r\n\r\n- [x] Yes (please specify the tool below)\r\n\r\nGPT-5.6\r\n\nSuppress noisy Alembic plugin setup logs\n\nAlembic emits autogenerate plugin registration messages at INFO during CLI startup. Those unrelated lines contaminate machine-readable command output, while warnings and errors still need to remain visible.",
+    "matches": [],
+    "listLinks": [
+     69911
+    ],
+    "regexLinks": [],
+    "findLinks": {
+     "69911": "list"
+    },
+    "regexWithoutColon": [
+     69911
+    ],
+    "bodyAt": {
+     "body": "### Under which category would you file this issue?\n\nAirflow Core\n\n### Apache Airflow version\n\n3.3.0\n\n### What happened and how to reproduce it?\n\nWhen executing `airflow dags list --columns dag_id,fileloc,owners,is_paused --output json` alembic logs are included in the response:\n```\n2026-07-15T09:14:02.822021Z [info     ] setup plugin alembic.autogenerate.schemas [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822120Z [info     ] setup plugin alembic.autogenerate.tables [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822171Z [info     ] setup plugin alembic.autogenerate.types [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822210Z [info     ] setup plugin alembic.autogenerate.constraints [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822244Z [info     ] setup plugin alembic.autogenerate.defaults [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822280Z [info     ] setup plugin alembic.autogenerate.comments [alembic.runtime.plugins] loc=plugins.py:37\n```\n\nI hoped that https://github.com/apache/airflow/pull/65655 resolves the issue however it does not.\n\n\n\n### What you think should happen instead?\n\nI expect only `json` value to be returned without additional logs so it would be easily parseable.\n\n### Operating System\n\n_No response_\n\n### Deployment\n\nOfficial Apache Airflow Helm Chart\n\n### Apache Airflow Provider(s)\n\n_No response_\n\n### Versions of Apache Airflow Providers\n\n```\napache-airflow-providers-amazon==9.31.0\napache-airflow-providers-cncf-kubernetes==10.19.0\napache-airflow-providers-common-compat==1.15.0\napache-airflow-providers-common-io==1.8.0\napache-airflow-providers-common-sql==2.0.1\napache-airflow-providers-databricks==7.16.1\napache-airflow-providers-fab==3.7.1\napache-airflow-providers-github==2.11.3\napache-airflow-providers-hashicorp==4.7.1\napache-airflow-providers-http==6.0.4\napache-airflow-providers-microsoft-mssql==4.7.0\napache-airflow-providers-mysql==6.6.1\napache-airflow-providers-postgres==6.8.0\napache-airflow-providers-sftp==5.8.2\napache-airflow-providers-slack==9.10.2\napache-airflow-providers-smtp==3.0.1\napache-airflow-providers-ssh==5.0.4\napache-airflow-providers-standard==1.15.0\n```\n\n### Official Helm Chart version\n\n1.22.0 (latest released)\n\n### Kubernetes Version\n\n_No response_\n\n### Helm Chart configuration\n\n_No response_\n\n### Docker Image customizations\n\n_No response_\n\n### Anything else?\n\n_No response_\n\n### Are you willing to submit PR?\n\n- [x] Yes I am willing to submit a PR!\n\n### Code of Conduct\n\n- [x] I agree to follow this project's [Code of Conduct](https://github.com/apache/airflow/blob/main/CODE_OF_CONDUCT.md)\n",
+     "editedAfter": false,
+     "missing": false
+    },
+    "titleAt": {
+     "title": "Alembic logs included in the stdout output when performing airflow cli commands",
+     "renamedAfter": false
+    },
+    "query": "Alembic logs included in the stdout output when performing airflow cli commands\n\n### Under which category would you file this issue?\n\nAirflow Core\n\n### Apache Airflow version\n\n3.3.0\n\n### What happened and how to reproduce it?\n\nWhen executing `airflow dags list --columns dag_id,fileloc,owners,is_paused --output json` alembic logs are included in the response:\n```\n2026-07-15T09:14:02.822021Z [info     ] setup plugin alembic.autogenerate.schemas [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822120Z [info     ] setup plugin alembic.autogenerate.tables [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822171Z [info     ] setup plugin alembic.autogenerate.types [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822210Z [info     ] setup plugin alembic.autogenerate.constraints [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822244Z [info     ] setup plugin alembic.autogenerate.defaults [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822280Z [info     ] setup plugin alembic.autogenerate.comments [alembic.runtime.plugins] loc=plugins.py:37\n```\n\nI hoped that https://github.com/apache/airflow/pull/65655 resolves the issue however it does not.\n\n\n\n### What you think should happen instead?\n\nI expect only `json` value to be returned without additional logs so it would be easily parseable.\n\n### Operating System\n\n_No response_\n\n### Deployment\n\nOfficial Apache Airflow Helm Chart\n\n### Apache Airflow Provider(s)\n\n_No response_\n\n### Versions of Apache Airflow Providers\n\n```\napache-airflow-providers-amazon==9.31.0\napache-airflow-providers-cncf-kubernetes==10.19.0\napache-airflow-providers-common-compat==1.15.0\napache-airflow-providers-common-io==1.8.0\napache-airflow-providers-common-sql==2.0.1\napache-airflow-providers-databricks==7.16.1\napache-airflow-providers-fab==3.7.1\napache-airflow-providers-github==2.11.3\napache-airflow-providers-hashicorp==4.7.1\napache-airflow-providers-http==6.0.4\napache-airflow-providers-microsoft-mssql==4.7.0\napache-airflow-providers-mysql==6.6.1\napache-airflow-providers-postgres==6.8.0\napache-airflow-providers-sftp==5.8.2\napache-airflow-providers-slack==9.10.2\napache-airflow-providers-smtp==3.0.1\napache-airflow-providers-ssh==5.0.4\napache-airflow-providers-standard==1.15.0\n```\n\n### Official Helm Chart version\n\n1.22.0 (latest released)\n\n### Kubernetes Version\n\n_No response_\n\n### Helm Chart configuration\n\n_No response_\n\n### Docker Image customizations\n\n_No response_\n\n### Anything else?\n\n_No response_\n\n### Are you willing to submit PR?\n\n- [x] Yes I am willing to submit a PR!\n\n### Code of Conduct\n\n- [x] I agree to follow this project's [Code of Conduct](https://github.com/apache/airflow/blob/main/CODE_OF_CONDUCT.md)",
+    "leak": null,
+    "queryNow": "Alembic logs included in the stdout output when performing airflow cli commands\n\n### Under which category would you file this issue?\n\nAirflow Core\n\n### Apache Airflow version\n\n3.3.0\n\n### What happened and how to reproduce it?\n\nWhen executing `airflow dags list --columns dag_id,fileloc,owners,is_paused --output json` alembic logs are included in the response:\n```\n2026-07-15T09:14:02.822021Z [info     ] setup plugin alembic.autogenerate.schemas [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822120Z [info     ] setup plugin alembic.autogenerate.tables [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822171Z [info     ] setup plugin alembic.autogenerate.types [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822210Z [info     ] setup plugin alembic.autogenerate.constraints [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822244Z [info     ] setup plugin alembic.autogenerate.defaults [alembic.runtime.plugins] loc=plugins.py:37\n2026-07-15T09:14:02.822280Z [info     ] setup plugin alembic.autogenerate.comments [alembic.runtime.plugins] loc=plugins.py:37\n```\n\nI hoped that https://github.com/apache/airflow/pull/65655 resolves the issue however it does not.\n\n\n\n### What you think should happen instead?\n\nI expect only `json` value to be returned without additional logs so it would be easily parseable.\n\n### Operating System\n\n_No response_\n\n### Deployment\n\nOfficial Apache Airflow Helm Chart\n\n### Apache Airflow Provider(s)\n\n_No response_\n\n### Versions of Apache Airflow Providers\n\n```\napache-airflow-providers-amazon==9.31.0\napache-airflow-providers-cncf-kubernetes==10.19.0\napache-airflow-providers-common-compat==1.15.0\napache-airflow-providers-common-io==1.8.0\napache-airflow-providers-common-sql==2.0.1\napache-airflow-providers-databricks==7.16.1\napache-airflow-providers-fab==3.7.1\napache-airflow-providers-github==2.11.3\napache-airflow-providers-hashicorp==4.7.1\napache-airflow-providers-http==6.0.4\napache-airflow-providers-microsoft-mssql==4.7.0\napache-airflow-providers-mysql==6.6.1\napache-airflow-providers-postgres==6.8.0\napache-airflow-providers-sftp==5.8.2\napache-airflow-providers-slack==9.10.2\napache-airflow-providers-smtp==3.0.1\napache-airflow-providers-ssh==5.0.4\napache-airflow-providers-standard==1.15.0\n```\n\n### Official Helm Chart version\n\n1.22.0 (latest released)\n\n### Kubernetes Version\n\n_No response_\n\n### Helm Chart configuration\n\n_No response_\n\n### Docker Image customizations\n\n_No response_\n\n### Anything else?\n\n_No response_\n\n### Are you willing to submit PR?\n\n- [x] Yes I am willing to submit a PR!\n\n### Code of Conduct\n\n- [x] I agree to follow this project's [Code of Conduct](https://github.com/apache/airflow/blob/main/CODE_OF_CONDUCT.md)",
+    "leakNow": null
+   }
+  }
+ }
+}

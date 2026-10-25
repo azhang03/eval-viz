@@ -43,8 +43,11 @@ def git(repo: Path, *args: str) -> str:
     return subprocess.run(["git", "-C", str(repo), *args], capture_output=True, text=True, check=True).stdout
 
 
-def load(repo: Path, rev: str, path: str, names: set[str]) -> dict:
-    """Run only the top-level definitions and assignments called `names` from one module."""
+def load(repo: Path, rev: str, path: str, names: set[str], extra: dict | None = None) -> dict:
+    """Run only the top-level definitions and assignments called `names` from one module.
+
+    `extra` gives the names they use from other modules (for example `re`, or a function loaded before).
+    """
     tree = ast.parse(git(repo, "show", f"{rev}:{path}"))
     picked = []
     for node in tree.body:
@@ -56,7 +59,7 @@ def load(repo: Path, rev: str, path: str, names: set[str]) -> dict:
     missing = names - found
     if missing:
         raise SystemExit(f"{path} at {rev}: not found: {', '.join(sorted(missing))}")
-    namespace: dict = {"hashlib": hashlib, "__name__": "cmeval_check"}
+    namespace: dict = {"hashlib": hashlib, "__name__": "cmeval_check", **(extra or {})}
     # postponed annotations, so type names from other modules (Hit, Span) need not exist here
     future = ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0)
     module = ast.fix_missing_locations(ast.Module(body=[future, *picked], type_ignores=[]))

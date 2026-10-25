@@ -1,6 +1,6 @@
 // The pipeline map: stages, their steps, and the code that does each step.
 // It links the 3D floor (page 1) to the explorer. Kept by hand; /vizup proposes changes.
-// The stage status follows the newest manifest (here f70e851).
+// The stage status follows the newest manifest (here 96464b4).
 
 import type { DefId, RepoPath } from "../src/data/types";
 
@@ -9,6 +9,8 @@ export type CloserKey = "labeler" | "hunks" | "split" | "iou" | "keywords" | "gr
 
 export type StageStatus = "built" | "partial" | "planned";
 
+export type Route = "swebench" | "fresh";
+
 export type Part = {
   /** Step name, shown on the floor and in the cards. */
   n: string;
@@ -16,6 +18,8 @@ export type Part = {
   c?: number;
   /** A planned step with no code yet: drawn as a dashed ghost. */
   ghost?: boolean;
+  /** The route of a stage with two ways in (COLLECT). No route: the step is on both routes. */
+  route?: Route;
   closer?: CloserKey;
   /** The files of this step and the definitions it uses in each file. */
   use?: [RepoPath, DefId[]][];
@@ -36,23 +40,47 @@ export type Stage = {
   parts?: Part[];
 };
 
+/**
+ * The label of step k. Most stages number their steps 1, 2, 3. A stage with two routes (COLLECT)
+ * numbers each route on its own: S1 for SWE-bench, G1 to G5 for fresh tasks from GitHub, and 1 to 4
+ * for the steps of both routes, so no route seems to start in the middle. Not F: F1 to F4 name the
+ * features.
+ */
+export function stepLabel(stage: Stage, k: number): string {
+  const parts = stage.parts ?? [];
+  const part = parts[k];
+  if (!part || !parts.some((p) => p.route)) return String(k + 1);
+  const place = parts.slice(0, k + 1).filter((p) => p.route === part.route).length;
+  return `${part.route === "swebench" ? "S" : part.route === "fresh" ? "G" : ""}${place}`;
+}
+
 const SRC = "eval/src/cmeval/";
 
 export const STAGES: Stage[] = [
 
   { id: "collect", name: "Collect", feat: "F1 + F4", status: "built", out: "tasks/*.jsonl", color: 0xd4673f,
-    text: "Builds the answer keys. A task is one real GitHub issue: its text is the search query, and the code just before the fix is what systems search. The fix itself tells which files, classes, and functions are the right answer (\"gold\").",
+    text: "Builds the answer keys. A task is one real GitHub issue: its text is the search query, and the code just before the fix is what systems search. The fix itself tells which files, classes, and functions are the right answer (\"gold\"). Tasks come in two ways: from SWE-bench Verified, or fresh from GitHub, from fixes made after the model's training data ends. Both ways end in the same labeler and the same task format.",
     parts: [
-      { n: "Start import", c: 0xe9b440, use: [[SRC + "cli.py", ["cmeval.cli.cmd_import"]], [SRC + "importers/swebench.py", ["cmeval.importers.swebench.import_swebench_verified", "cmeval.importers.swebench.balanced_order"]]],
+      { n: "Start import", c: 0xe9b440, route: "swebench", use: [[SRC + "cli.py", ["cmeval.cli.cmd_import"]], [SRC + "importers/swebench.py", ["cmeval.importers.swebench.import_swebench_verified", "cmeval.importers.swebench.balanced_order"]]],
         d: "<code>cmeval import</code> reads SWE-bench rows (an issue, its repo, the commit before the fix, and the fix as a diff). It takes about the same number of rows from each repo, in a fixed order, so one big repo cannot fill the set." },
+      { n: "Choose repos", c: 0x5b6fb5, route: "fresh", use: [[SRC + "cli.py", ["cmeval.cli.cmd_repo_stats"]], [SRC + "collect/repo_stats.py", ["cmeval.collect.repo_stats.collect_stats", "cmeval.collect.repo_stats.pr_funnel", "cmeval.collect.repo_stats.code_stats"]]],
+        d: "<code>cmeval repo-stats</code> measures candidate repos: their size, their languages, a quick count of merged PRs that close one issue, and how much code codemem would index. People choose the repos from these numbers and list them in a config file. For fresh-v1: 7 Python repos of 16 candidates." },
+      { n: "Search merged PRs", c: 0x2f8f8a, route: "fresh", use: [[SRC + "collect/search.py", ["cmeval.collect.search.search_merged_prs", "cmeval.collect.search.date_windows", "cmeval.collect.search.is_bot"]], [SRC + "github.py", ["cmeval.github.GitHub", "cmeval.github.cache_key"]]],
+        d: "Lists every PR merged into the repo's main branch after the cutoff, through GitHub's search, 7 days at a time (GitHub gives at most 1,000 results for one search). Each answer is saved on disk, so a second run needs no network. Fixes opened before the cutoff and PRs by bots are dropped." },
+      { n: "Find the issue", c: 0xd4673f, route: "fresh", use: [[SRC + "collect/links.py", ["cmeval.collect.links.find_links", "cmeval.collect.links.list_links", "cmeval.collect.links.regex_links"]]],
+        d: "Finds the issue that each PR fixes, in two ways: GitHub's own list of the issues a PR closes, and SWE-bench's rule, which looks for words like \"fixes #123\". A PR must link exactly one issue. Each task records which way found its link." },
+      { n: "Issue as it was", c: 0xe9b440, route: "fresh", use: [[SRC + "collect/issues.py", ["cmeval.collect.issues.fetch_issues", "cmeval.collect.issues.body_at", "cmeval.collect.issues.title_at", "cmeval.collect.issues.build_query", "cmeval.collect.issues.leak"]], [SRC + "collect/candidates.py", ["cmeval.collect.candidates.collect_candidates"]]],
+        d: "Rebuilds the issue as it was when the fix PR was opened, from GitHub's edit history (Decision 8). A later edit can describe the fix, so the query uses the earlier title and body. A query that names the fix PR or a fix commit is dropped." },
+      { n: "Base and patch", c: 0x6c5a49, route: "fresh", use: [[SRC + "collect/tasks_build.py", ["cmeval.collect.tasks_build.candidate_to_task", "cmeval.collect.tasks_build.merge_base", "cmeval.collect.tasks_build.fetch_pr_files"]], [SRC + "repos.py", ["cmeval.repos.parents", "cmeval.repos.diff", "cmeval.repos.apply_check"]]],
+        d: "Finds the base commit, the code just before the fix, from the way the PR was merged (Decision 7). Then it makes the patch itself with git, so the patch and the base always match. The patch must touch exactly the PR's files, apply at the base, and change 1 to 5 code files and at most 200 lines." },
       { n: "Time machine", c: 0x2f8f8a, use: [[SRC + "repos.py", ["cmeval.repos.read_file", "cmeval.repos.ensure_commit", "cmeval.repos.ensure_clone"]]],
         d: "Gives each file exactly as it was at the task's base commit: the commit just before the fix. It reads the file from a local copy of the repo's history, so nothing has to be checked out." },
       { n: "Diff reader", c: 0x5b6fb5, closer: "hunks", use: [[SRC + "patches.py", ["cmeval.patches.parse_patch", "cmeval.patches.align_file_diff"]]],
         d: "Reads the fix as a diff. A diff is split into hunks: small blocks of changed lines, each with a stated line number. The stated number can be wrong, so this step finds where each hunk really fits in the old file." },
       { n: "Labeler", c: 0xd4673f, closer: "labeler", use: [[SRC + "labels.py", ["cmeval.labels.label_at_commit", "cmeval.labels.label_patch", "cmeval.labels.find_definitions"]]],
         d: "Decides what counts as the right answer. For each line the fix changed, the function around it, and the class around that, become gold: the code a search system should find. In scikit-learn-10908 the fix changes line 995, so <code>CountVectorizer.get_feature_names</code> is the gold function." },
-      { n: "Build and save", c: 0x6c5a49, closer: "split", use: [[SRC + "importers/swebench.py", ["cmeval.importers.swebench.row_to_task"]], [SRC + "tasks.py", ["cmeval.tasks.validate", "cmeval.tasks.save_tasks"]]],
-        d: "Builds each task (query, base commit, gold labels), checks it, gives it its split (SWE-bench tasks are always dev; fresh tasks are split dev or test by a hash of their ID), and writes the answer key: one JSON line for each task." },
+      { n: "Build and save", c: 0x6c5a49, closer: "split", use: [[SRC + "importers/swebench.py", ["cmeval.importers.swebench.row_to_task"]], [SRC + "collect/tasks_build.py", ["cmeval.collect.tasks_build.build_tasks", "cmeval.collect.tasks_build.write_task_set"]], [SRC + "tasks.py", ["cmeval.tasks.validate", "cmeval.tasks.save_tasks"]], [SRC + "cli.py", ["cmeval.cli.cmd_collect"]]],
+        d: "Builds each task (query, base commit, gold labels), checks it, gives it its split (SWE-bench tasks are always dev; fresh tasks are split dev or test by a hash of their ID), and writes the answer key: one JSON line for each task. Fresh tasks also get a meta file with the funnel: the count after each step, and why each PR was dropped." },
     ] },
   { id: "run", name: "Run", feat: "F2 + F3", status: "built", out: "runs/<id>/<system>.jsonl", color: 0x2f8f8a,
     text: "Runs every search system on every task and saves what each one returns. A task is one real GitHub issue, plus the commit just before its fix. For each repo, one copy of the code (the worktree) moves forward from task to task.",
