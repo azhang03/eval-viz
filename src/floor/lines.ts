@@ -6,19 +6,31 @@ import { COLOR, rbox, rollerRow } from "./kit";
 import type { Overlay, Tag } from "./overlay";
 
 /**
- * The caption bar under an opened line. It names each phase in plain words (viz decision 23).
+ * The caption of an opened line. It names each phase in plain words (viz decision 23). With an
+ * element, it is a bar under the line; with a function, the text goes there instead (the COLLECT
+ * line sends it to the rail).
  * A phase lasts at least as long as its caption takes to read: say() pads the phase before it,
  * then starts a new one; hold() pads the last phase of a timeline.
  */
 export class Caption {
-  readonly el: HTMLDivElement;
+  private el: HTMLDivElement | null = null;
+  private out: (html: string) => void;
   private phase = new WeakMap<gsap.core.Timeline, { start: number; need: number }>();
 
-  constructor(root: HTMLElement, intro: string) {
-    this.el = document.createElement("div");
-    this.el.className = "caption";
-    this.el.innerHTML = intro;
-    root.appendChild(this.el);
+  constructor(target: HTMLElement | ((html: string) => void), intro: string) {
+    if (typeof target === "function") {
+      this.out = target;
+    } else {
+      const el = document.createElement("div");
+      el.className = "caption";
+      target.appendChild(el);
+      this.el = el;
+      this.out = (html) => {
+        el.innerHTML = html;
+        gsap.fromTo(el, { y: 6 }, { y: 0, duration: 0.25, ease: "power2.out" });
+      };
+    }
+    this.out(intro);
   }
 
   hold(t: gsap.core.Timeline): gsap.core.Timeline {
@@ -33,15 +45,12 @@ export class Caption {
 
   say(t: gsap.core.Timeline, html: string, at?: gsap.Position): gsap.core.Timeline {
     this.hold(t);
-    t.add(() => {
-      this.el.innerHTML = html;
-      gsap.fromTo(this.el, { y: 6 }, { y: 0, duration: 0.25, ease: "power2.out" });
-    }, at);
+    t.add(() => this.out(html), at);
     this.phase.set(t, { start: t.duration(), need: readTime(html) });
     return t;
   }
 
-  remove(): void { this.el.remove(); }
+  remove(): void { this.el?.remove(); }
 }
 
 /** A short readout with real values. Only the CSS class "off" hides it, never GSAP. */

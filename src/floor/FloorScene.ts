@@ -8,7 +8,8 @@ import { gsap } from "gsap";
 import type { Part, Stage } from "../../content/stages";
 import { COLOR, disposeTree, ghostBox, mat, rbox, rollerRow, rounded, spinRollers } from "./kit";
 import { Overlay, type Tag } from "./overlay";
-import { assemblyView, boxesView, type Cam, type View } from "./views";
+import { boxesView, type Cam, type View } from "./views";
+import { collectView } from "./collectView";
 import { runView } from "./runView";
 import { scoreView } from "./scoreView";
 
@@ -17,6 +18,8 @@ export type FloorHandlers = {
   selectStep: (k: number) => void;
   /** Files to light in the explorer while the mouse is over a machine or a step (null: none). */
   hoverFiles: (files: string[] | null) => void;
+  /** The step that an opened line plays now, and its text (null: none). */
+  live: (step: number | null, html: string) => void;
 };
 
 export type FloorState = { opened: Stage["id"] | null; step: number | null };
@@ -347,8 +350,8 @@ export class FloorScene {
     this.machines.forEach((x) => (x.group.visible = x === m));
     this.beltPlan.visible = false;
     const tl = gsap.timeline();
-    const ctx = { scene: this.scene, overlay: this.overlay, x: X[i] ?? 0, tl };
-    const make = { collect: assemblyView, run: runView, score: scoreView }[stage.id as string] ?? boxesView;
+    const ctx = { scene: this.scene, overlay: this.overlay, x: X[i] ?? 0, tl, live: this.on.live };
+    const make = { collect: collectView, run: runView, score: scoreView }[stage.id as string] ?? boxesView;
     this.view = make(stage, ctx);
     tl.to(this.cam, { ...this.view.cam, yaw: 0, duration: 1.1, ease: "power3.inOut", onUpdate: this.placeCamera }, 0)
       .to(m.group.scale, { x: 0.01, y: 0.01, z: 0.01, duration: 0.45, ease: "back.in(2)" }, 0.1)

@@ -1,8 +1,11 @@
 // Actions on the System page. Each one changes the floor state and the card stack together,
 // so the rail always shows where the user is.
-import { STAGES, type Part, type Stage } from "../../../content/stages";
+import { useEffect, useRef } from "react";
+import { STAGES, stepLabel, type Part, type Route, type Stage } from "../../../content/stages";
 import { clearCards, pushCard, type Card } from "../../state/rail";
 import { system } from "../../state/system";
+import { live } from "../../state/live";
+import { useStore } from "../../state/store";
 import { Html } from "../Html";
 import { FileChip, FnChip, fileName, goFn, walkToFile } from "./cards";
 import { pause } from "../../lib/util";
@@ -10,7 +13,79 @@ import { openCloser } from "../../closers/host";
 
 const short = (path: string) => path.replace("eval/src/cmeval/", "");
 
+const ROUTE_TITLE: Record<Route | "both", string> = { swebench: "From SWE-bench", fresh: "Fresh from GitHub", both: "Both routes" };
+
+/** The steps under one heading, or one group for each route (COLLECT). Steps keep their numbers. */
+function stepGroups(stage: Stage): { title: string; items: [Part, number][] }[] {
+  const parts = stage.parts ?? [];
+  if (!parts.some((p) => p.route)) return [{ title: "Steps", items: parts.map((p, k) => [p, k]) }];
+  const groups: { title: string; items: [Part, number][] }[] = [];
+  parts.forEach((p, k) => {
+    const title = ROUTE_TITLE[p.route ?? "both"];
+    const last = groups[groups.length - 1];
+    if (last?.title === title) last.items.push([p, k]);
+    else groups.push({ title, items: [[p, k]] });
+  });
+  return groups;
+}
+
+const userScrolled = new WeakMap<HTMLElement, number>();
+
+/**
+ * Scroll the card that holds the lit step, and only that card, so the step is in view. Not while
+ * the user reads: after a wheel or touch scroll in the card, it waits 8 seconds.
+ */
+function keepInView(li: HTMLElement): void {
+  let box = li.parentElement;
+  while (box && !/(auto|scroll)/.test(getComputedStyle(box).overflowY)) box = box.parentElement;
+  if (!box) return;
+  if (!userScrolled.has(box)) {
+    const mark = () => userScrolled.set(box!, Date.now());
+    box.addEventListener("wheel", mark, { passive: true });
+    box.addEventListener("touchmove", mark, { passive: true });
+    userScrolled.set(box, 0);
+  }
+  if (Date.now() - (userScrolled.get(box) ?? 0) < 8000) return;
+  const r = li.getBoundingClientRect(), b = box.getBoundingClientRect();
+  if (r.top < b.top || r.bottom > b.bottom) box.scrollTo({ top: box.scrollTop + (r.top - b.top) - 12, behavior: "smooth" });
+}
+
+/** The steps of a stage card. The step that the opened line plays now is lit, with its live text. */
+function StepList({ stage, groups, labeled }: { stage: Stage; groups: ReturnType<typeof stepGroups>; labeled: boolean }) {
+  const now = useStore(live, (s) => s.step);
+  const lit = useRef<HTMLLIElement | null>(null);
+  useEffect(() => { if (lit.current) keepInView(lit.current); }, [now]);
+  return (
+    <>
+      {groups.map((g) => (
+        <div key={g.title}>
+          <h4>{g.title}</h4>
+          <ol className={labeled ? "steps labeled" : "steps"} start={g.items[0]![1] + 1}>
+            {g.items.map(([p, k]) => (
+              <li key={p.n} className={k === now ? "now" : undefined} ref={k === now ? lit : undefined} onClick={() => selectStep(k)}>
+                {labeled && <span className="lbl">{stepLabel(stage, k)}.</span>}
+                <b>{p.n}</b>
+                {p.ghost ? " (planned)" : ""}. <Html html={p.d} />
+                <LiveLine step={k} />
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </>
+  );
+}
+
+/** What the opened line does now at this step, with real values. Nothing while another step plays. */
+function LiveLine({ step }: { step: number }) {
+  const state = useStore(live, (s) => s);
+  if (state.step !== step || !state.html) return null;
+  return <Html as="div" className="live-now" html={state.html} />;
+}
+
 function stageCard(stage: Stage): Card {
+  const groups = stepGroups(stage);
+  const labeled = groups.length > 1; // routes have their own labels (S1, G1, 1)
   return {
     key: `stage:${stage.id}`,
     type: "stage",
@@ -22,15 +97,7 @@ function stageCard(stage: Stage): Card {
     body: () => (
       <>
         <Html as="p" html={stage.text} />
-        <h4>Steps</h4>
-        <ol className="steps">
-          {(stage.parts ?? []).map((p, k) => (
-            <li key={p.n} onClick={() => selectStep(k)}>
-              <b>{p.n}</b>
-              {p.ghost ? " (planned)" : ""}. <Html html={p.d} />
-            </li>
-          ))}
-        </ol>
+        <StepList stage={stage} groups={groups} labeled={labeled} />
         <div className="src-note">Click a step here or on the floor.</div>
       </>
     ),
@@ -38,24 +105,26 @@ function stageCard(stage: Stage): Card {
 }
 
 function stepCard(stage: Stage, part: Part, k: number): Card {
+  const label = stepLabel(stage, k);
   const files = (part.use ?? []).map(([f]) => f);
   return {
     key: `step:${stage.id}:${k}`,
     type: "step",
-    short: `${k + 1}. ${part.n}`,
-    kind: part.ghost ? "step . planned" : `step ${k + 1} . ${stage.name}`,
+    short: `${label}. ${part.n}`,
+    kind: part.ghost ? "step . planned" : `step ${label} . ${stage.name}`,
     title: part.n,
     sig: files.map(short).join(" + "),
     restore: () => selectStep(k, false),
     body: () => (
       <>
         <Html as="p" html={part.d} />
+        <LiveLine step={k} />
         {(part.use ?? []).map(([file, ids]) => (
           <div key={file}>
             <h4>{fileName(file)}</h4>
             <div className="chips">
               {ids.map((id) => <FnChip key={id} id={id} />)}
-              <FileChip path={file} label={`open ${fileName(file)}`} marks={{ ids, badge: `step ${k + 1}`, also: (part.use ?? []).filter(([f]) => f !== file) }} />
+              <FileChip path={file} label={`open ${fileName(file)}`} marks={{ ids, badge: `step ${label}`, also: (part.use ?? []).filter(([f]) => f !== file) }} />
             </div>
           </div>
         ))}
@@ -109,7 +178,7 @@ export function hoverFiles(files: string[] | null): void {
 
 let playRun = 0;
 
-/** Walk the whole import call path: each COLLECT step, each of its files, each function card. */
+/** Walk the whole import call path: each COLLECT step of the SWE-bench route, each of its files, each function card. */
 export async function playImportPath(): Promise<void> {
   if (system.get().playing) {
     system.set((s) => ({ ...s, playing: false }));
@@ -126,6 +195,7 @@ export async function playImportPath(): Promise<void> {
   }
   const parts = STAGES.find((st) => st.id === "collect")?.parts ?? [];
   for (let k = 0; k < parts.length && alive(); k++) {
+    if (parts[k]?.route === "fresh") continue;
     selectStep(k);
     await pause(1.2);
     for (const [file, ids] of parts[k]?.use ?? []) {
