@@ -7,13 +7,16 @@ import { pushCard, popTo, rail, removeCard } from "../state/rail";
 import { createStore } from "../state/store";
 import { esc } from "../lib/esc";
 import type { CloserView } from "./types";
-import { labelerView } from "./labeler";
-import { hunksView } from "./hunks";
-import { splitView } from "./split";
-import { iouView } from "./iou";
 import { CloserSteps } from "./CloserSteps";
+import { VIEWS } from "./registry";
+import { readTime } from "../lib/pace";
 
-const VIEWS: Record<CloserKey, () => CloserView> = { labeler: labelerView, hunks: hunksView, split: splitView, iou: iouView };
+
+/** Play waits long enough to read a step (viz decision 23): its reading time plus time to watch. */
+function stepTime(i: number): number {
+  const d = view?.steps[i]?.d ?? "";
+  return Math.max(4.2, readTime(d) + 1.5);
+}
 
 export type CloserState = { key: CloserKey | null; i: number; playing: boolean; visible: boolean };
 export const closer = createStore<CloserState>({ key: null, i: 0, playing: false, visible: false });
@@ -110,9 +113,9 @@ export function togglePlay(): void {
     if (!view) return;
     if (closer.get().i >= view.steps.length - 1) { stopPlay(); return; }
     go(closer.get().i + 1);
-    play = gsap.delayedCall(4.2, next);
+    play = gsap.delayedCall(stepTime(closer.get().i), next);
   };
-  play = gsap.delayedCall(3.2, next);
+  play = gsap.delayedCall(stepTime(closer.get().i), next);
 }
 
 function stopPlay() {

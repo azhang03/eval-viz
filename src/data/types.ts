@@ -86,3 +86,96 @@ export type Fixture10908 = {
   task: { file: string; rev: string; bytes: number; record: TaskRecord };
   hunk: HunkExample;
 };
+
+// ---- B5 examples (data/fixtures/b5.json, scripts/gen_examples.py): scikit-learn-10908 through the
+// committed cmeval code. Only the fields the site uses are typed.
+
+/** Metric name to value, as accuracy_metrics and token_metrics return them (null: no value). */
+export type Metrics = Record<string, number | null>;
+
+export type LevelGrade = { first: number | null; metrics: Metrics; relevance: number[][]; units: number[][] };
+
+export type B5Hit = {
+  path: RepoPath; start: number | null; end: number | null; symbol: string | null; score: number;
+  text: string; matches: number | null; sha: string; cached: boolean;
+  /** "code", "test", or "other", by cmeval's own rule (patches.classify_path). */
+  kind: string;
+};
+
+export type B5System = {
+  options: Record<string, unknown>;
+  n_hits: number;
+  top: B5Hit[];
+  grade: { tokens: number[]; estimated: boolean[]; file: LevelGrade; class: LevelGrade; function: LevelGrade };
+};
+
+export type B5Switch = {
+  switch: "none" | "types" | "idf" | "clean" | "tests_last";
+  options: Record<string, unknown>;
+  keywords: string[];
+  weights: Record<string, number>;
+  files: [string, number][];
+  files_total: number;
+  gold_file_rank: number | null;
+  gold_fn_rank: number | null;
+  top: B5Hit[];
+};
+
+export type FixtureB5 = {
+  rev: string;
+  task: { id: string; repo: string; base_commit: string; query: string; gold_file: RepoPath; gold_fn: { symbol: string; start: number; end: number } };
+  keywords: {
+    trace: { raw: string; word: string; source: "backtick" | "identifier" | "word"; status: "kept" | "duplicate" | "stop word" | "too short" | "over the cap" }[];
+    final: string[]; cleaned: string[]; dropped_by_cleaning: string[];
+    marks: { start: number; end: number; kind: "backtick" | "identifier" | "word" | "skip" }[];
+    stop_words: number; max: number;
+  };
+  grep: { files_matched: number; files: [string, number][]; file_kinds: Record<string, string>; gold_file_rank: number | null; hits: B5Hit[]; grade: B5System["grade"] };
+  switches: B5Switch[];
+  gold_file_lines: { line: number; text: string; fn: string | null; fn_start: number | null; fn_end: number | null; keywords: string[] }[];
+  gold_file_functions: { symbol: string; start: number; end: number; lines: number }[];
+  gold_file_outside: number;
+  systems: Record<"grep-fn" | "grep-fn-plus", B5System>;
+  run: {
+    systems: { name: string; adapter: "grep" | "grep_fn" | "codemem"; options: Record<string, unknown>; group: string }[];
+    no_index_key: string;
+    repos: [string, number][];
+    tasks: number;
+    order: { id: string; repo: string; commit: string }[];
+    search_ms: Record<string, { ms: number; run: string }>;
+  };
+  token_cache: { overhead: number; chars_per_token_estimate: number };
+  tests_examples: {
+    file_units: { hits: string[]; raw: number[][]; units: number[][]; mrr_raw: number; mrr_units: number; note: string };
+    precision: { units: number[][]; n_gold: number; metrics: Metrics; note: string };
+    tokens: { hit_tokens: number[]; relevance: number[][]; n_gold: number; metrics: Metrics; note: string };
+  };
+};
+
+// ---- the final dev run (data/results/dev50-final.json, scripts/gen_results.py)
+
+export type Stat = { mean: number; n: number; ci: [number, number] | null } | null;
+
+export type ResultsFinal = {
+  rev: string;
+  /** A few real rows of scores.jsonl (one task, two systems, function level). */
+  example_rows: { task_id: string; system: string; level: string; iou: number | null; metric: string; value: number | null }[];
+  scores_rows: number;
+  /** The report's section headings, in order. */
+  sections: string[];
+  run: string;
+  split: string;
+  tasks: number;
+  repos: number;
+  baseline: string;
+  primary_systems: string[];
+  code: { cmeval: string; parts: { run: string; systems: string[]; cmeval: string }[] };
+  warnings: string[];
+  systems: { name: string; granularity: "file" | "line"; search_ms_median: number | null; levels: Partial<Record<"file" | "function", Record<string, Stat>>> }[];
+  primary: {
+    system: string; level: string; metric: string; n: number; baseline_mean: number | null; system_mean: number | null;
+    diff: number | null; ci: [number, number] | null; p: number | null; method: string; p_holm: number | null;
+    found: Record<"both" | "system only" | "baseline only" | "neither", number> | null;
+  }[];
+  b4: { run: string; result: string; systems: { system: string; tasks: number; same_top: number; largest_metric_diff: number; largest_token_diff_pct: number; result: string }[] };
+};
