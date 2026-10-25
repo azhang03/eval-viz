@@ -45,7 +45,13 @@
         {
           "id": "F4",
           "title": "Fresh-task collector",
-          "batches": []
+          "batches": [
+            { "id": "B0", "title": "Choose the repos", "commit": "50dca7b", "date": "2026-10-24", "added": "cmeval repo-stats: github.py (gh access with a response cache), collect/search.py (merged PRs in date windows), and collect/repo_stats.py (repo size, a 6-step PR funnel, and code counts). The run on 16 candidate repos." },
+            { "id": "B1", "title": "PRs, issues, and the query", "commit": "c6e5af9", "date": "2026-10-24", "added": "cmeval collect: collect/links.py (GitHub's list and SWE-bench's regex), collect/issues.py (the issue as it was when the fix PR was opened), and collect/candidates.py (an 8-step funnel). 21,822 merged PRs give 3,002 candidates." },
+            { "id": "B2", "title": "Fresh tasks", "commit": "1eb20ab", "date": "2026-10-24", "added": "collect/tasks_build.py: the base commit from the merge type, our own patch, the file-list and apply checks, size filters, labels, and the split. tasks/fresh-v1.jsonl: 2,084 tasks from 7 Python repos." },
+            { "id": "review", "title": "Review fixes", "commit": "5bed231", "date": "2026-10-24", "added": "Collector fixes from the code review: the rate-limit guard reads only live answers, a git error drops one candidate, and labeler version 3 (cmeval-labels/3)." },
+            { "id": "task-set", "title": "Final fresh task set", "commit": "96464b4", "date": "2026-10-24", "added": "fresh-v1 made again with the reviewed collector: the same 2,084 tasks with labeler version 3. F4 merged into main (PR #5)." }
+          ]
         }
       ]
     }
