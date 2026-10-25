@@ -8,15 +8,15 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import type { Route, Stage } from "../../content/stages";
 import { fixtureFresh as F } from "../data/load";
+import { nvNum as num } from "../closers/nv";
 import { esc } from "../lib/esc";
+import { secondsBetween as seconds } from "../lib/util";
 import { COLOR, disposeTree, mat, rbox, rollerRow, spinRollers } from "./kit";
 import { Caption, mini } from "./lines";
 import type { Tag } from "./overlay";
 import { stepTag, type View, type ViewCtx } from "./views";
 
 const EX = F.examples.crate;
-const num = (v: number) => v.toLocaleString("en-US");
-const seconds = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 1000);
 
 // Station places, by step index: 0 dock, 1 to 5 fresh (back belt), 6 to 9 both routes.
 const BZ = -4.8; // the back belt
@@ -24,6 +24,7 @@ const JX = -5.6; // the short belt between the dock and the time machine
 const PX = [-8.4, 8.0, 4.8, 1.6, -1.6, -4.8, -3.2, 0, 3.2, 6.4];
 const PZ = [0, BZ, BZ, BZ, BZ, BZ, 0, 0, 0, 0];
 const TY = 0.61; // crate height on a belt
+const CARD_HOME = new THREE.Vector3(0, 0.55, -0.3); // the PR and issue card on the fresh crate
 const FRESH = [1, 2, 3, 4, 5], BOTH = [6, 7, 8, 9];
 // The floor slab is 23 by 8, centered at the origin: move the line forward so both belts sit on it.
 const SCALE = 1, SHIFT = new THREE.Vector3(0, 0, 2.9);
@@ -166,7 +167,7 @@ export function collectView(stage: Stage, ctx: ViewCtx): View {
   // before the fix PR was opened is the one the query uses.
   const versionSheets: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>[] = [];
   const vs = EX.issue.versions;
-  const usedVersion = Math.max(0, vs.map((v) => v.at <= EX.pr.createdAt).lastIndexOf(true));
+  const usedVersion = EX.real.bodyAt.version ?? -1; // the version that the real body_at returned (-1: none)
   const VX = (i: number) => -0.75 + i * (1.2 / Math.max(1, vs.length - 1)), VY = 1.45, VZ = -1.45;
   const leakLamp = mat(0x55524c);
   {
@@ -343,7 +344,7 @@ export function collectView(stage: Stage, ctx: ViewCtx): View {
   // the fresh crate also carries the PR and issue card: the issue line that G4 takes away (a later edit),
   // the link tag from step 3, and the patch strip from step 5
   const card = new THREE.Group();
-  card.position.set(0, 0.55, -0.3);
+  card.position.copy(CARD_HOME);
   task.add(card);
   card.add(rbox(0.5, 0.42, 0.04, COLOR.paper, 0.015));
   const cardLines = [0.1, 0.0, -0.1].map((y) => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.035, 0.01), mat(0x9a8f80)); m.position.set(0, y, 0.025); card.add(m); return m; });
@@ -387,7 +388,8 @@ export function collectView(stage: Stage, ctx: ViewCtx): View {
 
 
   let route: Route = "fresh";
-  let trip = 0;
+  let trip = 0; // full loops: the two routes take turns
+  let dockTurn = 0; // the dock takes the repos in turn, as balanced_order does
   let counter: HTMLElement | null = null;
   const at = (k: number) => new THREE.Vector3(PX[k] ?? 0, TY, PZ[k] ?? 0);
 
@@ -412,8 +414,12 @@ export function collectView(stage: Stage, ctx: ViewCtx): View {
     const f = route === "fresh";
     card.visible = f && k >= 3;
     card.scale.setScalar(k >= 6 ? 0.6 : 1);
-    card.position.set(k >= 6 ? 0.22 : 0, k >= 6 ? 0.45 : 0.55, -0.3);
+    if (k >= 6) card.position.set(0.22, 0.45, -0.3); else card.position.copy(CARD_HOME);
     cardLines.forEach((m) => (m.visible = true));
+    // scales that a station's part changes, in case the part was cut off
+    lateLine.scale.x = 1;
+    commits.forEach((m) => m.scale.setScalar(1));
+    tiles.forEach((x) => x.m.scale.set(1, 1, 1));
     lateLine.visible = f && k <= 4 && k >= 3;
     linkTag.visible = f && k >= 4;
     patch.visible = f && k >= 6;
@@ -436,7 +442,7 @@ export function collectView(stage: Stage, ctx: ViewCtx): View {
   // ---------- each station's part, with its caption ----------
   const ACT: ((t: gsap.core.Timeline) => void)[] = [
     (t) => { // dock: take the next repo's stack (round-robin, as in balanced_order)
-      const r = trip % 3, top = tops[r];
+      const r = dockTurn++ % 3, top = tops[r];
       say(t, `<b>S1. SWE-bench import.</b> One row of SWE-bench Verified: an issue, its repo, the commit before the fix, and the fix. Rows come from each repo in turn.`);
       t.add(() => { crate.material.color.setHex(REPO[r] ?? COLOR.teal); if (top) top.visible = false; task.position.set(PX[0]! - 0.72 + r * 0.72, 1.42, -1.55); task.scale.setScalar(0.72); })
         .to(task.position, { y: 2.0, duration: 0.35, ease: "power2.out" })
@@ -485,8 +491,8 @@ export function collectView(stage: Stage, ctx: ViewCtx): View {
     (t) => { // issue as it was: the card goes to the rack of stored versions; the later version drops away
       const s = fx.later ? seconds(fx.pr.createdAt, fx.later.at) : 0;
       const added = fx.added.length ? ` (<code>${esc(fx.added.join(" "))}</code>)` : "";
-      const home = card.position.clone();
-      const up = new THREE.Vector3(VX(usedVersion), VY - TY, VZ + 0.35); // the card's place in front of the rack, in crate space
+      const home = CARD_HOME; // where prepare() puts the card on the fresh route before the front belt
+      const up = new THREE.Vector3(VX(Math.max(0, usedVersion)), VY - TY, VZ + 0.35); // the card's place in front of the rack, in crate space
       say(t, `<b>G4. The issue text, as it was when the fix PR was opened.</b> From GitHub's edit history: ${vs.length} stored versions. The body was edited ${s} s after that moment${added}, so the query uses the version before it.`);
       t.to(card.position, { x: up.x, y: up.y, z: up.z, duration: 0.7, ease: "power2.inOut" }, "+=0.2");
       vs.forEach((v, i) => t.add(() => versionSheets[i]!.material.color.setHex(v.at > EX.pr.createdAt ? COLOR.terra : COLOR.teal), `+=${i === 0 ? 0.2 : 0.35}`));

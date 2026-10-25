@@ -213,7 +213,8 @@ export type FreshExample = {
     /** Display only: the spans of "word: #N" in prText. */
     colonLinks: { start: number; end: number }[];
     regexWithoutColon: number[];
-    bodyAt: { body: string; editedAfter: boolean; missing: boolean };
+    /** version: the index in issue.versions of the body that body_at returned (null: none of them). */
+    bodyAt: { body: string; editedAfter: boolean; missing: boolean; version: number | null };
     titleAt: { title: string; renamedAfter: boolean };
     query: string;
     leak: string | null;

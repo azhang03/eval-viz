@@ -111,8 +111,10 @@ def main(argv: list[str] | None = None) -> int:
     home = Path(os.environ.get("CMEVAL_HOME", Path.home() / ".cmeval"))
     cache = home / "gh-cache"
     if not cache.exists():
-        print(f"missing GitHub cache: {cache} (run cmeval collect first)", file=sys.stderr)
-        return 1
+        # The cache is on Andrew's machine only. Without it, keep the committed fixture, so
+        # `npm run gen` still works for everyone else.
+        print(f"{OUT.relative_to(ROOT)}: kept as committed (no GitHub cache at {cache})", file=sys.stderr)
+        return 0 if OUT.exists() else 1
     prs, found_issues = cached_answers(cache, {t["fix"]["url"] for t in examples.values()},
                                        {t["issue"]["url"] for t in examples.values()})
 
@@ -137,7 +139,10 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{task['id']}: the real functions build another query than the task file has", file=sys.stderr)
             return 1
         now_query = issues["build_query"](issue["title"], issue.get("body") or "")
-        edits = sorted(issue["userContentEdits"]["nodes"], key=lambda e: e["editedAt"])
+        # the stored versions, oldest first; like body_at, only edits with a time
+        edits = sorted((e for e in issue["userContentEdits"]["nodes"] if e.get("editedAt")), key=lambda e: e["editedAt"])
+        # which stored version body_at returned: the newest one from before `when` with its text
+        used = [i for i, e in enumerate(edits) if e["editedAt"] <= when and (e.get("diff") or "") == body]
         out_examples[name] = {
             "id": task["id"], "repo": repo, "split": task["split"], "baseCommit": task["base_commit"],
             "mergeType": task["fix"]["merge_type"],
@@ -154,12 +159,13 @@ def main(argv: list[str] | None = None) -> int:
                 "listLinks": sorted(links["list_links"](pr, repo)),
                 "regexLinks": sorted(links["regex_links"](pr, repo)),
                 "findLinks": {str(k): v for k, v in links["find_links"](pr, repo).items()},
-                # an illustration for the links view: the same PR with "word: #N" written as "word #N"
                 # display only: where the PR text writes "word: #N", for the near miss in the links view
                 "colonLinks": [{"start": m.start(), "end": m.end()} for m in re.finditer(r"\w+: #\d+", text)],
+                # an illustration for the links view: the same PR with "word: #N" written as "word #N"
                 "regexWithoutColon": sorted(links["regex_links"](
                     {**pr, "body": re.sub(r"(\w+): #", r"\1 #", pr.get("body") or "")}, repo)),
-                "bodyAt": {"body": body, "editedAfter": body_after, "missing": missing},
+                "bodyAt": {"body": body, "editedAfter": body_after, "missing": missing,
+                           "version": used[-1] if used else None},
                 "titleAt": {"title": title, "renamedAfter": title_after},
                 "query": query,
                 "leak": issues["leak"](query, pr),

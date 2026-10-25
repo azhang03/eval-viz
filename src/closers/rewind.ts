@@ -5,17 +5,17 @@
 import { gsap } from "gsap";
 import { fixtureFresh as F } from "../data/load";
 import { esc } from "../lib/esc";
+import { secondsBetween as seconds } from "../lib/util";
 import { nvLayer, nvNow, nvNum, nvShell } from "./nv";
 import type { CloserStep, CloserView } from "./types";
 
 const when = (iso: string) => `${iso.slice(0, 10)} ${iso.slice(11, 19)}`;
-const seconds = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 1000);
 
 export function rewindView(): CloserView {
   const E = F.examples.crate, I = E.issue, R = E.real, pr = E.pr;
   const versions = I.versions;
-  const used = Math.max(0, versions.map((v) => v.at <= pr.createdAt).lastIndexOf(true));
-  const later = versions.find((v) => v.at > pr.createdAt);
+  const used = R.bodyAt.version ?? -1; // the version that the real body_at returned (-1: none of them)
+  const later = versions.find((v) => v.at > pr.createdAt); // the first edit after the fix PR opened
   // display only: the lines that a version has and the version before it does not
   const added = (k: number) => {
     const before = new Set((versions[k - 1]?.body ?? "").split("\n"));
@@ -32,8 +32,8 @@ export function rewindView(): CloserView {
   const visible = lateLines.filter((l) => !l.trim().startsWith("<!--"));
   const steps: CloserStep[] = [
     { t: "An issue has a history", d: `Issues are edited after they are written. An edit after the fix exists can describe the fix, and then the query would give the answer away. These are the real events of ${esc(E.repo)} issue #${I.number}, in order (not to scale).` },
-    { t: "Every stored version", d: `GitHub keeps each version of an issue body. This issue has ${versions.length}. ${later ? `The last one came ${seconds(pr.createdAt, later.at)} s after the fix PR was opened, and it adds ${visible.length ? `"${esc(visible.join(" "))}"` : "hidden lines"}: a link to the fix PR.` : ""}` },
-    { t: "Back to when the fix PR opened", d: `<code>body_at</code> takes the newest version from before that moment: the one from ${esc(when(versions[used]?.at ?? I.createdAt))}. ${R.bodyAt.editedAfter ? "The task is tagged: body edited after the fix." : ""} <code>title_at</code> does the same with title renames. ${I.renames.length ? "" : "This title was never renamed, so it stays."}` },
+    { t: "Every stored version", d: `GitHub keeps each version of an issue body. This issue has ${versions.length}. ${later ? `The first edit after the fix PR was opened came ${seconds(pr.createdAt, later.at)} s later, and it adds ${visible.length ? `"${esc(visible.join(" "))}"` : "hidden lines"}: a link to the fix PR.` : ""}` },
+    { t: "Back to when the fix PR opened", d: `<code>body_at</code> takes the newest version from before that moment${versions[used] ? `: the one from ${esc(when(versions[used]!.at))}` : ""}. ${R.bodyAt.editedAfter ? "The task is tagged: body edited after the fix." : ""} <code>title_at</code> does the same with title renames. ${I.renames.length ? "" : "This title was never renamed, so it stays."}` },
     { t: "The query", d: `<code>build_query</code> joins the title, a blank line, and the body, and removes hidden HTML comments. Code blocks and the visible template text stay, as an agent would see them. This is the query of the task: the script checks that it equals the query in the task file.` },
     { t: "The leak check", d: `<code>leak</code> drops a query that names the fix PR (#${pr.number}) or one of its commits. This query ${R.leak ? `fails: ${esc(R.leak)}` : "passes"}. Run on the issue as it is today, <code>leak</code> ${R.leakNow ? `fails: ${esc(R.leakNow)}` : `also finds nothing, because "gh-${pr.number}" has no "#"`}. So here the step back in time is what keeps the fix PR out of the query.` },
     { t: "Across fresh-v1", d: `Of ${nvNum(F.edited.tasks)} tasks, ${nvNum(F.edited.body)} have a body and ${nvNum(F.edited.title)} have a title that changed after the fix PR was opened. Their queries use the earlier versions.` },
@@ -73,10 +73,10 @@ export function rewindView(): CloserView {
         facts.innerHTML = `<b>events</b> ${events.length}<br><b>fix PR opened</b> ${esc(when(pr.createdAt))}`;
         run.fromTo(root.querySelectorAll(".rw-ev"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.12 });
       } else if (i === 1) {
-        facts.innerHTML = `<b>versions</b> ${versions.length}${later ? `<br><b>last edit</b> ${seconds(pr.createdAt, later.at)} s after the fix PR opened` : ""}`;
+        facts.innerHTML = `<b>versions</b> ${versions.length}${later ? `<br><b>first edit after the fix PR</b> ${seconds(pr.createdAt, later.at)} s` : ""}`;
         run.fromTo(root.querySelectorAll(".rw-v"), { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.3, stagger: 0.12 });
       } else if (i === 2) {
-        facts.innerHTML = `<b>body</b> version ${used + 1} (${esc(when(versions[used]?.at ?? I.createdAt))})<br><b>title</b> ${R.titleAt.renamedAfter ? "the title before the rename" : "no rename"}`;
+        facts.innerHTML = `<b>body</b> ${versions[used] ? `version ${used + 1} (${esc(when(versions[used]!.at))})` : "the current body"}<br><b>title</b> ${R.titleAt.renamedAfter ? "the title before the rename" : "no rename"}`;
         run.fromTo(root.querySelectorAll(".rw-v.late"), { opacity: 1 }, { opacity: 0.35, duration: 0.4 });
       } else if (i === 3) {
         facts.innerHTML = `<b>query</b> ${nvNum(R.query.length)} characters<br><b>equals the task file</b> yes`;

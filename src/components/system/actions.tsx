@@ -29,11 +29,32 @@ function stepGroups(stage: Stage): { title: string; items: [Part, number][] }[] 
   return groups;
 }
 
+const userScrolled = new WeakMap<HTMLElement, number>();
+
+/**
+ * Scroll the card that holds the lit step, and only that card, so the step is in view. Not while
+ * the user reads: after a wheel or touch scroll in the card, it waits 8 seconds.
+ */
+function keepInView(li: HTMLElement): void {
+  let box = li.parentElement;
+  while (box && !/(auto|scroll)/.test(getComputedStyle(box).overflowY)) box = box.parentElement;
+  if (!box) return;
+  if (!userScrolled.has(box)) {
+    const mark = () => userScrolled.set(box!, Date.now());
+    box.addEventListener("wheel", mark, { passive: true });
+    box.addEventListener("touchmove", mark, { passive: true });
+    userScrolled.set(box, 0);
+  }
+  if (Date.now() - (userScrolled.get(box) ?? 0) < 8000) return;
+  const r = li.getBoundingClientRect(), b = box.getBoundingClientRect();
+  if (r.top < b.top || r.bottom > b.bottom) box.scrollTo({ top: box.scrollTop + (r.top - b.top) - 12, behavior: "smooth" });
+}
+
 /** The steps of a stage card. The step that the opened line plays now is lit, with its live text. */
 function StepList({ stage, groups, labeled }: { stage: Stage; groups: ReturnType<typeof stepGroups>; labeled: boolean }) {
   const now = useStore(live, (s) => s.step);
   const lit = useRef<HTMLLIElement | null>(null);
-  useEffect(() => { lit.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, [now]);
+  useEffect(() => { if (lit.current) keepInView(lit.current); }, [now]);
   return (
     <>
       {groups.map((g) => (
