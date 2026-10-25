@@ -120,8 +120,22 @@ def inner(args) -> int:
     for task in (json.loads(l) for l in (snap / "eval/tasks/swebv-dev50.jsonl").read_text().splitlines()):
         tasks_by_repo[task["repo"]] = tasks_by_repo.get(task["repo"], 0) + 1
 
+    # a few real rows of scores.jsonl, for the view that explains the input of a report:
+    # one task, two systems, function level at the main IoU
+    example_task = "scikit-learn__scikit-learn-10908"
+    rows = [r for r in read_jsonl(run_dir / "scores.jsonl")
+            if r["task_id"] == example_task and r["level"] == "function" and r["iou"] == 0.5
+            and r["metric"] in ("mrr", "recall@10", "tokens_to_first")
+            and r["system"] in (DEFAULT_BASELINE, "cm-bm25-code-usage")]
+    rows.sort(key=lambda r: (r["system"] != DEFAULT_BASELINE, ("mrr", "recall@10", "tokens_to_first").index(r["metric"])))
+    n_rows = sum(1 for _ in (run_dir / "scores.jsonl").open(encoding="utf-8"))
+
     out = {
         "rev": args.rev,
+        "example_rows": rows,
+        # the sections of the report, in order: its "## " and "### " headings
+        "sections": [line.lstrip("#").strip() for line in made.decode("utf-8").splitlines() if line.startswith(("## ", "### "))],
+        "scores_rows": n_rows,
         "run": RUN,
         "split": meta.get("split"),
         "tasks": result.tasks_scored,

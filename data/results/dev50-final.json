@@ -77,6 +77,56 @@
    }
   ]
  },
+ "example_rows": [
+  {
+   "iou": 0.5,
+   "level": "function",
+   "metric": "mrr",
+   "system": "grep-fn-plus",
+   "task_id": "scikit-learn__scikit-learn-10908",
+   "value": 0.166667
+  },
+  {
+   "iou": 0.5,
+   "level": "function",
+   "metric": "recall@10",
+   "system": "grep-fn-plus",
+   "task_id": "scikit-learn__scikit-learn-10908",
+   "value": 1.0
+  },
+  {
+   "iou": 0.5,
+   "level": "function",
+   "metric": "tokens_to_first",
+   "system": "grep-fn-plus",
+   "task_id": "scikit-learn__scikit-learn-10908",
+   "value": 1780.0
+  },
+  {
+   "iou": 0.5,
+   "level": "function",
+   "metric": "mrr",
+   "system": "cm-bm25-code-usage",
+   "task_id": "scikit-learn__scikit-learn-10908",
+   "value": 0.5
+  },
+  {
+   "iou": 0.5,
+   "level": "function",
+   "metric": "recall@10",
+   "system": "cm-bm25-code-usage",
+   "task_id": "scikit-learn__scikit-learn-10908",
+   "value": 1.0
+  },
+  {
+   "iou": 0.5,
+   "level": "function",
+   "metric": "tokens_to_first",
+   "system": "cm-bm25-code-usage",
+   "task_id": "scikit-learn__scikit-learn-10908",
+   "value": 356.0
+  }
+ ],
  "primary": [
   {
    "baseline_mean": 0.3160887391304348,
@@ -204,6 +254,25 @@
  "repos": 12,
  "rev": "f70e851",
  "run": "2026-10-23-dev50-final",
+ "scores_rows": 35100,
+ "sections": [
+  "Main results",
+  "File level: accuracy",
+  "File level: tokens",
+  "Function level (IoU 0.5): accuracy",
+  "Function level (IoU 0.5): tokens",
+  "Class level (IoU 0.5): accuracy",
+  "Class level (IoU 0.5): tokens",
+  "Paired comparison with grep-fn-plus",
+  "Primary metrics (Holm correction over all 6 tests, significant at 0.05)",
+  "Exploratory (raw p, no correction)",
+  "Groups (means and task counts, no intervals)",
+  "By identifier in query",
+  "By repo",
+  "IoU check (function level)",
+  "Latency and size",
+  "Task counts"
+ ],
  "split": "dev",
  "systems": [
   {

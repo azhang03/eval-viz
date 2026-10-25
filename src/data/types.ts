@@ -156,6 +156,11 @@ export type Stat = { mean: number; n: number; ci: [number, number] | null } | nu
 
 export type ResultsFinal = {
   rev: string;
+  /** A few real rows of scores.jsonl (one task, two systems, function level). */
+  example_rows: { task_id: string; system: string; level: string; iou: number | null; metric: string; value: number | null }[];
+  scores_rows: number;
+  /** The report's section headings, in order. */
+  sections: string[];
   run: string;
   split: string;
   tasks: number;

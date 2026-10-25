@@ -253,3 +253,9 @@
 .rs tr.sig td { background: rgba(47,143,90,.14); }
 .rs tr.best td { background: rgba(47,143,138,.14); font-weight: 700; }
 .rs tr.base td { background: rgba(91,111,181,.12); }
+.rs .pair { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px; }
+.rs .pair div { border-radius: 10px; background: rgba(43,38,34,.04); padding: 8px 10px; }
+.rs .pair span { display: block; font: 600 10.5px var(--font-mono); color: var(--ink-dim); }
+.rs .pair b { font: 600 15px var(--font-mono); color: var(--terra); }
+.rs .secs { margin: 0; padding-left: 26px; font: 12px/1.6 var(--font-mono); }
+.rs .warn { margin-bottom: 10px; }

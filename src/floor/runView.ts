@@ -352,7 +352,7 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
     () => { // merge runs: a copy of each row goes into a new rack; the two runs stay as they are
       const t = gsap.timeline().add(() => reset());
       const [a, b] = PARTS;
-      say(t, `<b>Merge runs.</b> The final dev run joins two runs of the same ${resultsFinal.tasks} tasks: the ${a?.systems.length ?? 0} grep systems (run again after the grep-fn fixes) and the ${b?.systems.length ?? 0} codemem systems (from the first full run).`, 0);
+      say(t, `<b>Merge runs.</b> Example: run ${esc(resultsFinal.run)} (an early dev run) joins two runs of the same ${resultsFinal.tasks} tasks: the ${a?.systems.length ?? 0} grep systems (run again after a grep-fn fix) and the ${b?.systems.length ?? 0} codemem systems (from an earlier run, so their index builds did not run again).`, 0);
       t.to(rackC.g.scale, { x: 1, y: 1, z: 1, duration: 0.5, ease: "back.out(1.8)" }, ">0.4");
       // positions of the rack items at full size (the racks do not move; rack C grows in above)
       const at = (rack: { g: THREE.Group; items: THREE.Mesh[] }, j: number) => new THREE.Vector3().copy(MG).add(rack.g.position).add(rack.items[j]!.position);
@@ -363,7 +363,7 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
           .add(() => { c.visible = false; dst.visible = true; }, ">");
       });
       t.to({}, { duration: 0.8 });
-      say(t, `merge copies the run files into a new run, here ${esc(resultsFinal.run)}. The two runs do not change. The new run is scored next.`);
+      say(t, `merge copies the run files into a new run. The two runs do not change. The new run is scored next.`);
       t.add(() => setNote(nMerge, `new run: <b>${(a?.systems.length ?? 0) + (b?.systems.length ?? 0)} systems</b>`), "<");
       return hold(t.to({}, { duration: 1.2 }));
     },
