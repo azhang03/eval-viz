@@ -521,6 +521,11 @@
   "python/cpython",
   "huggingface/transformers"
  ],
+ "edited": {
+  "tasks": 2084,
+  "body": 143,
+  "title": 13
+ },
  "examples": {
   "crate": {
    "id": "python__cpython-154728",
@@ -662,6 +667,7 @@
     "findLinks": {
      "154726": "both"
     },
+    "colonLinks": [],
     "regexWithoutColon": [
      154726
     ],
@@ -773,6 +779,12 @@
     "findLinks": {
      "69911": "list"
     },
+    "colonLinks": [
+     {
+      "start": 251,
+      "end": 265
+     }
+    ],
     "regexWithoutColon": [
      69911
     ],

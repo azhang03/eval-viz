@@ -687,6 +687,10 @@ export function collectView(stage: Stage, ctx: ViewCtx): View {
       ctx.scene.remove(root);
       disposeTree(root);
     },
-    tick(dt) { rolls.forEach((r) => spinRollers(r, dt)); },
+    tick(dt) {
+      rolls.forEach((r) => spinRollers(r, dt));
+      // the readout belongs to the crate: it shows only while the crate does
+      crateTag.el.style.visibility = task.visible && task.scale.x > 0.5 ? "" : "hidden";
+    },
   };
 }

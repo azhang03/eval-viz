@@ -155,6 +155,8 @@ def main(argv: list[str] | None = None) -> int:
                 "regexLinks": sorted(links["regex_links"](pr, repo)),
                 "findLinks": {str(k): v for k, v in links["find_links"](pr, repo).items()},
                 # an illustration for the links view: the same PR with "word: #N" written as "word #N"
+                # display only: where the PR text writes "word: #N", for the near miss in the links view
+                "colonLinks": [{"start": m.start(), "end": m.end()} for m in re.finditer(r"\w+: #\d+", text)],
                 "regexWithoutColon": sorted(links["regex_links"](
                     {**pr, "body": re.sub(r"(\w+): #", r"\1 #", pr.get("body") or "")}, repo)),
                 "bodyAt": {"body": body, "editedAfter": body_after, "missing": missing},
@@ -186,6 +188,10 @@ def main(argv: list[str] | None = None) -> int:
         "candidates": [{"repo": r["repo"], "possible": r["funnel"]["body_100"], "pythonShare": round(r["python_share"], 3)}
                        for r in stats["repos"]],
         "chosen": [r["name"] for r in config["repo"]],
+        # tasks whose issue body or title changed after the fix PR was opened (their queries use the earlier version)
+        "edited": {"tasks": len(tasks),
+                   "body": sum(bool(t["tags"].get("body_edited_after_fix")) for t in tasks.values()),
+                   "title": sum(bool(t["tags"].get("title_edited_after_fix")) for t in tasks.values())},
         "examples": out_examples,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)

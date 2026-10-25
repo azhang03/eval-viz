@@ -210,6 +210,8 @@ export type FreshExample = {
     listLinks: number[];
     regexLinks: number[];
     findLinks: Record<string, "list" | "regex" | "both">;
+    /** Display only: the spans of "word: #N" in prText. */
+    colonLinks: { start: number; end: number }[];
     regexWithoutColon: number[];
     bodyAt: { body: string; editedAfter: boolean; missing: boolean };
     titleAt: { title: string; renamedAfter: boolean };
@@ -236,5 +238,6 @@ export type FixtureFresh = {
   stats: { tasks: number; tasks_per_split: Record<string, number>; tasks_per_repo: Record<string, number>; share_gold_all_python: number; merge_types: Record<string, number> };
   candidates: { repo: string; possible: number; pythonShare: number }[];
   chosen: string[];
+  edited: { tasks: number; body: number; title: number };
   examples: { crate: FreshExample; links: FreshExample };
 };

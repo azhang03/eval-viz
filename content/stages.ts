@@ -5,7 +5,7 @@
 import type { DefId, RepoPath } from "../src/data/types";
 
 /** Keys of the "look closer" views. Each view is a design decision, animated step by step. */
-export type CloserKey = "labeler" | "hunks" | "split" | "iou" | "keywords" | "grepfn" | "grade" | "tokens" | "results";
+export type CloserKey = "labeler" | "hunks" | "split" | "iou" | "keywords" | "grepfn" | "grade" | "tokens" | "results" | "funnel" | "links" | "rewind";
 
 export type StageStatus = "built" | "partial" | "planned";
 
@@ -67,11 +67,11 @@ export const STAGES: Stage[] = [
         d: "<code>cmeval repo-stats</code> measures candidate repos: their size, their languages, a quick count of merged PRs that close one issue, and how much code codemem would index. People choose the repos from these numbers and list them in a config file. For fresh-v1: 7 Python repos of 16 candidates." },
       { n: "Search merged PRs", c: 0x2f8f8a, route: "fresh", use: [[SRC + "collect/search.py", ["cmeval.collect.search.search_merged_prs", "cmeval.collect.search.date_windows", "cmeval.collect.search.is_bot"]], [SRC + "github.py", ["cmeval.github.GitHub", "cmeval.github.cache_key"]]],
         d: "Lists every PR merged into the repo's main branch after the cutoff, through GitHub's search, 7 days at a time (GitHub gives at most 1,000 results for one search). Each answer is saved on disk, so a second run needs no network. Fixes opened before the cutoff and PRs by bots are dropped." },
-      { n: "Find the issue", c: 0xd4673f, route: "fresh", use: [[SRC + "collect/links.py", ["cmeval.collect.links.find_links", "cmeval.collect.links.list_links", "cmeval.collect.links.regex_links"]]],
+      { n: "Find the issue", c: 0xd4673f, route: "fresh", closer: "links", use: [[SRC + "collect/links.py", ["cmeval.collect.links.find_links", "cmeval.collect.links.list_links", "cmeval.collect.links.regex_links"]]],
         d: "Finds the issue that each PR fixes, in two ways: GitHub's own list of the issues a PR closes, and SWE-bench's rule, which looks for words like \"fixes #123\". A PR must link exactly one issue. Each task records which way found its link." },
-      { n: "Issue as it was", c: 0xe9b440, route: "fresh", use: [[SRC + "collect/issues.py", ["cmeval.collect.issues.fetch_issues", "cmeval.collect.issues.body_at", "cmeval.collect.issues.title_at", "cmeval.collect.issues.build_query", "cmeval.collect.issues.leak"]], [SRC + "collect/candidates.py", ["cmeval.collect.candidates.collect_candidates"]]],
+      { n: "Issue as it was", c: 0xe9b440, route: "fresh", closer: "rewind", use: [[SRC + "collect/issues.py", ["cmeval.collect.issues.fetch_issues", "cmeval.collect.issues.body_at", "cmeval.collect.issues.title_at", "cmeval.collect.issues.build_query", "cmeval.collect.issues.leak"]], [SRC + "collect/candidates.py", ["cmeval.collect.candidates.collect_candidates"]]],
         d: "Rebuilds the issue as it was when the fix PR was opened, from GitHub's edit history (Decision 8). A later edit can describe the fix, so the query uses the earlier title and body. A query that names the fix PR or a fix commit is dropped." },
-      { n: "Base and patch", c: 0x6c5a49, route: "fresh", use: [[SRC + "collect/tasks_build.py", ["cmeval.collect.tasks_build.candidate_to_task", "cmeval.collect.tasks_build.merge_base", "cmeval.collect.tasks_build.fetch_pr_files"]], [SRC + "repos.py", ["cmeval.repos.parents", "cmeval.repos.diff", "cmeval.repos.apply_check"]]],
+      { n: "Base and patch", c: 0x6c5a49, route: "fresh", closer: "funnel", use: [[SRC + "collect/tasks_build.py", ["cmeval.collect.tasks_build.candidate_to_task", "cmeval.collect.tasks_build.merge_base", "cmeval.collect.tasks_build.fetch_pr_files"]], [SRC + "repos.py", ["cmeval.repos.parents", "cmeval.repos.diff", "cmeval.repos.apply_check"]]],
         d: "Finds the base commit, the code just before the fix, from the way the PR was merged (Decision 7). Then it makes the patch itself with git, so the patch and the base always match. The patch must touch exactly the PR's files, apply at the base, and change 1 to 5 code files and at most 200 lines." },
       { n: "Time machine", c: 0x2f8f8a, use: [[SRC + "repos.py", ["cmeval.repos.read_file", "cmeval.repos.ensure_commit", "cmeval.repos.ensure_clone"]]],
         d: "Gives each file exactly as it was at the task's base commit: the commit just before the fix. It reads the file from a local copy of the repo's history, so nothing has to be checked out." },

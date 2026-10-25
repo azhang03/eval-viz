@@ -10,8 +10,12 @@ import { grepfnView } from "./grepfn";
 import { gradeView } from "./grade";
 import { tokensView } from "./tokens";
 import { resultsView } from "./results";
+import { funnelView } from "./funnel";
+import { linksView } from "./links";
+import { rewindView } from "./rewind";
 
 export const VIEWS: Record<CloserKey, () => CloserView> = {
   labeler: labelerView, hunks: hunksView, split: splitView, iou: iouView,
   keywords: keywordsView, grepfn: grepfnView, grade: gradeView, tokens: tokensView, results: resultsView,
+  funnel: funnelView, links: linksView, rewind: rewindView,
 };
