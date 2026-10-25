@@ -2,7 +2,7 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
 import { readTime } from "../lib/pace";
-import { COLOR, rbox } from "./kit";
+import { COLOR, rbox, rollerRow } from "./kit";
 import type { Overlay, Tag } from "./overlay";
 
 /**
@@ -92,14 +92,7 @@ export function hitTray(color: number): THREE.Group {
 
 export const ADAPTER_COLOR: Record<string, number> = { grep: COLOR.indigo, grep_fn: COLOR.terra, codemem: 0x6c5a49 };
 
-/** A belt of rollers along x. */
-export function rollers(x0: number, x1: number, z: number, y = 0.32, len = 1.04): THREE.Group {
-  const g = new THREE.Group();
-  for (let x = x0; x <= x1 + 1e-6; x += 0.5) {
-    const r = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, len, 10), new THREE.MeshStandardMaterial({ color: COLOR.steel, metalness: 0.4, roughness: 0.4 }));
-    r.rotation.x = Math.PI / 2;
-    r.position.set(x, y, z);
-    g.add(r);
-  }
-  return g;
+/** A belt of rollers along x (one instanced mesh; turn it with spinRollers). */
+export function rollers(x0: number, x1: number, z: number, y = 0.32, len = 1.04): THREE.InstancedMesh {
+  return rollerRow(x0, x1, z, y, len);
 }

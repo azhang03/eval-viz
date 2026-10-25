@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { STAGES } from "../../../content/stages";
 import { FloorScene } from "../../floor/FloorScene";
 import { system } from "../../state/system";
+import { closer } from "../../closers/host";
 import { hoverFiles, openStage, selectStep } from "./actions";
 import "./Floor.css";
 
@@ -22,8 +23,13 @@ export function Floor() {
     sync();
     if (import.meta.env.DEV) (window as { __floor?: FloorScene }).__floor = scene; // for browser tests
     const unsubscribe = system.subscribe(sync);
+    // the floor stops drawing while a look-closer view covers it
+    const cover = () => scene.setCovered(closer.get().visible);
+    cover();
+    const unCloser = closer.subscribe(cover);
     return () => {
       unsubscribe();
+      unCloser();
       scene.dispose();
     };
   }, []);

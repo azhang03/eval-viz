@@ -10,7 +10,7 @@ import { fixtureB5 as EX, resultsFinal } from "../data/load";
 import { esc } from "../lib/esc";
 import { nvShort as short } from "../closers/nv";
 import { reducedMotion } from "../lib/pace";
-import { COLOR, disposeTree, mat, rbox } from "./kit";
+import { COLOR, disposeTree, mat, rbox, spinRollers } from "./kit";
 import { ADAPTER_COLOR, Caption, arc, hideNote, hitTray, mini, move, note, rollers, setNote } from "./lines";
 import type { Tag } from "./overlay";
 import { stepTag, type View, type ViewCtx } from "./views";
@@ -443,6 +443,6 @@ export function runView(stage: Stage, ctx: ViewCtx): View {
       ctx.scene.remove(root);
       disposeTree(root);
     },
-    tick(dt) { rolls.children.forEach((r) => (r.rotation.y += dt * 4)); },
+    tick(dt) { spinRollers(rolls, dt); },
   };
 }

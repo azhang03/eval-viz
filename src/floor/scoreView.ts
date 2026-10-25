@@ -10,7 +10,7 @@ import { esc } from "../lib/esc";
 import { hitsInBudget, runningTotals } from "../lib/budget";
 import { nv3 as f3, nvNum as nf } from "../closers/nv";
 import { reducedMotion } from "../lib/pace";
-import { COLOR, disposeTree, mat, rbox } from "./kit";
+import { COLOR, disposeTree, mat, rbox, spinRollers } from "./kit";
 import { Caption, arc, hideNote, mini, note, rollers, setNote } from "./lines";
 import type { Tag } from "./overlay";
 import { stepTag, type View, type ViewCtx } from "./views";
@@ -267,6 +267,6 @@ export function scoreView(stage: Stage, ctx: ViewCtx): View {
       ctx.scene.remove(root);
       disposeTree(root);
     },
-    tick(dt) { rolls.children.forEach((r) => (r.rotation.y += dt * 4)); },
+    tick(dt) { spinRollers(rolls, dt); },
   };
 }
